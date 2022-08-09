@@ -102,21 +102,6 @@ secret_sauce = nil
 madlib = nil
 ```
 
-```elixir
-name_of_company = "DockYard"
-a_defined_offering = "DockYard Academy"
-a_defined_audience = "students"
-solve_a_problem = "learn Elixir"
-secret_sauce = "Livebook"
-
-madlib =
-  "My company, " <>
-    name_of_company <>
-    ", is developing " <>
-    a_defined_offering <>
-    " to help " <> a_defined_audience <> " " <> solve_a_problem <> " with " <> secret_sauce <> "."
-```
-
 ## String Interpolation Madlib
 
 In the Elixir cell below, fill in `blank1`, `blank2`, and `blank3` with a word to replace the blanks in the sentence.

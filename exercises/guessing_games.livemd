@@ -32,7 +32,7 @@ In the Elixir cell below create a word guessing game.
 Run the code with a correct and incorrect `guess` to ensure
 your code passes the tests.
 
-<!-- livebook:{"attrs":{"assertions":"assert Enum.all?([guess, answer, correct], &is_binary/1),\n  \"Ensure `guess`, `answer`, and `correct` are all strings\"\n\nif guess == answer do\n  assert correct == \"Correct!\"\nelse\n  assert correct == \"Incorrect.\"\nend","code":"guess = nil\r\nanswer = nil\r\n\r\ncorrect = nil","solution":"correct = if guess == answer, do: \"Correct!\", else: \"Incorrect.\""},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"assertions":"assert guess && is_binary(guess), \"Ensure `guess` is a string\"\nassert answer && is_binary(answer), \"Ensure `answer` is a string\"\nassert correct && is_binary(correct), \"Ensure `correct` is a string\"\n\nif guess == answer do\n  assert correct == \"Correct!\"\nelse\n  assert correct == \"Incorrect.\"\nend","code":"guess = nil\r\nanswer = nil\r\n\r\ncorrect = nil","solution":"correct = guess == answer && \"Correct!\" || \"Incorrect.\""},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -45,9 +45,9 @@ defmodule Assertion do
     answer = nil
 
     correct = nil
-
-    assert Enum.all?([guess, answer, correct], &is_binary/1),
-           "Ensure `guess`, `answer`, and `correct` are all strings"
+    assert guess && is_binary(guess), "Ensure `guess` is a string"
+    assert answer && is_binary(answer), "Ensure `answer` is a string"
+    assert correct && is_binary(correct), "Ensure `correct` is a string"
 
     if guess == answer do
       assert correct == "Correct!"
@@ -80,7 +80,7 @@ In the Elixir cell below create a number guessing game.
 Run your code with an equal, smaller, and larger `guess` than the `answer` to ensure your
 code passes all tests.
 
-<!-- livebook:{"attrs":{"assertions":"assert is_integer(guess), \"Ensure `guess` is an integer\"\nassert is_integer(answer), \"Ensure `answer` is an integer\"\nassert is_binary(correct), \"Ensure `correct` is a string\"\n\ncond do\n  guess == answer -> assert correct == \"Correct!\"\n  guess < answer -> assert correct == \"Too low!\"\n  guess > answer -> assert correct == \"Too high!\"\nend","code":"guess = nil\r\nanswer = nil\r\n\r\ncorrect = nil","solution":"correct =\n  cond do\n    guess == answer -> \"Correct!\"\n    guess < answer -> \"Too low!\"\n    guess > answer -> \"Too high!\"\n  end"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"assertions":"assert guess && is_integer(guess), \"Ensure `guess` is an integer\"\nassert answer && is_integer(answer), \"Ensure `answer` is an integer\"\nassert correct && is_binary(correct), \"Ensure `correct` is a string\"\n\ncond do\n  guess == answer -> assert correct == \"Correct!\"\n  guess < answer -> assert correct == \"Too low!\"\n  guess > answer -> assert correct == \"Too high!\"\nend","code":"guess = nil\r\nanswer = nil\r\n\r\ncorrect = nil\r\n","solution":"correct =\n  (guess == answer && \"Correct!\") || (guess < answer && \"Too low!\") ||\n    (guess > answer && \"Too high!\")"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -93,9 +93,10 @@ defmodule Assertion do
     answer = nil
 
     correct = nil
-    assert is_integer(guess), "Ensure `guess` is an integer"
-    assert is_integer(answer), "Ensure `answer` is an integer"
-    assert is_binary(correct), "Ensure `correct` is a string"
+
+    assert guess && is_integer(guess), "Ensure `guess` is an integer"
+    assert answer && is_integer(answer), "Ensure `answer` is an integer"
+    assert correct && is_binary(correct), "Ensure `correct` is a string"
 
     cond do
       guess == answer -> assert correct == "Correct!"

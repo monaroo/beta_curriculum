@@ -32,13 +32,9 @@ These exercises will have you convert a common formula into an Elixir program.
 
 ## Percentage
 
-Let's say we're building a program with a loading bar.
+We're building a program with a loading bar.Users download items, and you need to display the current percentage that the download has finished. We can calculate the percentage with $\frac{completed\ items}{total\ items}\times100$
 
-Users download items, and you need to display the current percentage that the download has finished.
-
-You can calculate the percentage with $\frac{completed\ items}{total\ items}\times100$
-
-In the Elixir cell below, calculate the percentage given `completed_items` and `total_items`.
+In the Elixir cell below, use arithmetic operators to calculate the percentage given `completed_items` and `total_items`.
 
 Replace `nil` with your answer.
 
@@ -76,51 +72,13 @@ total_items = 100
 percentage = nil
 ```
 
-Given a random number of completed_items and total_items, calculate the percentage.
-
-Replace `nil` with your answer.
-
-<!-- livebook:{"attrs":{"assertions":"assert total_items >= completed_items,\n  \"total_items should always be more than completed items, please reset the exercise\"\n\nassert percentage <= 100,\n  \"percentage should be a float between 0 and 100. Please check the formula entered.\"\n\nassert percentage == completed_items / total_items * 100","code":"completed_items = Utils.random(1..100)\r\ntotal_items = Utils.random(completed_items..100)\r\n\r\npercentage = nil","solution":"percentage = completed_items / total_items * 100"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
-
-```elixir
-ExUnit.start(auto_run: false)
-
-defmodule Assertion do
-  use ExUnit.Case
-
-  test "" do
-    completed_items = Utils.random(1..100)
-    total_items = Utils.random(completed_items..100)
-
-    percentage = nil
-
-    assert total_items >= completed_items,
-           "total_items should always be more than completed items, please reset the exercise"
-
-    assert percentage <= 100,
-           "percentage should be a float between 0 and 100. Please check the formula entered."
-
-    assert percentage == completed_items / total_items * 100
-  end
-end
-
-ExUnit.run()
-
-# Make variables and modules defined in the test available.
-# Also allows for exploration using the output of the cell.
-completed_items = Utils.random(1..100)
-total_items = Utils.random(completed_items..100)
-
-percentage = nil
-```
-
 ## Rocket Ship
 
 We're building a rocket ship app to teach people about physics.
 
 Users can enter the `mass` and `acceleration` of a ship to visualize the `force` generated.
 
-Given that ${mass} * {acceleration} = force$, calculate force. Replace `nil` with your answer.
+Given that ${mass} * {acceleration} = force$, calculate `force` using arithmetic operators. Replace `nil` with your answer.
 
 <!-- livebook:{"attrs":{"assertions":"assert force == 20","code":"mass = 10\r\nacceleration = 2\r\n\r\nforce = nil","solution":"force = mass * acceleration"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
@@ -227,7 +185,7 @@ b = 10
 c_square = nil
 ```
 
-### Bonus!
+### Bonus: Square Roots
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -235,7 +193,7 @@ This is a bonus challenge that requires going beyond what you've already learned
 
 You need to figure out how to find the square root of a number in Elixir.
 
-Given `c_square`, calculate `c`. Replace `nil` with your answer.
+Given `c_square` is `200`, calculate `c`. `c` should be $\sqrt200$. Replace `nil` with your answer.
 
 <!-- livebook:{"attrs":{"assertions":"assert c == :math.sqrt(200)","code":"c_square = 200\r\n\r\nc = nil","solution":"Check out `:math.sqrt/1`"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
