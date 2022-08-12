@@ -21,7 +21,8 @@ See our list of [Open Issues](https://github.com/DockYard-Academy/beta_curriculu
 3. Install [Livebook](https://github.com/livebook-dev/livebook):
 
    ```sh
-   mix escript.install github livebook-dev/livebook
+   mix do local.rebar --force, local.hex --force
+   mix escript.install hex livebook
    ```
 
    You may prefer to install [Livebook Desktop](https://livebook.dev/#install) instead of running Livebook with an Escript.
@@ -43,7 +44,7 @@ Raise an issue or contact brooklin.myers@dockyard.com if you are having trouble 
 
 ### Could not compile dependency :aws_signature
 
-When installing Livebook `mix escript.install github livebook-dev/livebook` you may see the following error.
+When installing Livebook as an Escript, you may see the following error.
 
 ```
 ** (Mix) Could not compile dependency :aws_signature, "/home/user/.mix/rebar3 bare compile --paths /tmp/mix-local-installer-fetcher-Ao9gNA/deps/new package/_build/prod/lib/*/ebin" command failed. Errors may have been logged above. You can recompile this dependency with "mix deps.compile aws_signature", update it with "mix deps.update aws_signature" or clean it with "mix deps.clean aws_signature"
