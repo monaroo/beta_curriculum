@@ -159,8 +159,14 @@ you're using an unbound variable.
 
 In the Elixir cell below, create a variable `hello` and bind it to the value `"world"`. Replace `nil` with your answer.
 
+<!-- livebook:{"attrs":{"chart_title":null,"height":null,"layers":[{"chart_type":"point","color_field":null,"color_field_aggregate":null,"color_field_type":null,"data_variable":null,"x_field":null,"x_field_aggregate":null,"x_field_type":null,"y_field":null,"y_field_aggregate":null,"y_field_type":null}],"vl_alias":"Elixir.VegaLite","width":null},"kind":"Elixir.KinoVegaLite.ChartCell","livebook_object":"smart_cell"} -->
+
 ```elixir
-hello = nil
+
+```
+
+```elixir
+hello = "world"
 
 Utils.feedback(:hello, hello)
 ```
@@ -268,7 +274,8 @@ Use pattern matching to bind `"jewel"` to a variable called `jewel`.
 Replace `jewel` with your answer.
 
 ```elixir
-jewel = [1, 2, "jewel"]
+[one, two, jewel] = [1, 2, "jewel"]
+jewel
 
 Utils.feedback(:jewel, jewel)
 ```
@@ -300,6 +307,7 @@ Use `IO.inspect` to print the `hello` variable.
 
 ```elixir
 hello = "world!"
+IO.inspect(hello)
 ```
 
 ## Commit Your Progress
