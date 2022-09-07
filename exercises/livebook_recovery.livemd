@@ -54,7 +54,7 @@ Alternatively, discard the changes on this `exercises/livebook_recovery.livemd`
 file with Visual Studio Code or GitHub Desktop.
 
 ```elixir
-"delete and recover me!"
+
 ```
 
 ## Up Next
