@@ -14,10 +14,6 @@ Mix.install([
 [Return Home](../start.livemd)<span style="padding: 0 30px"></span>
 [Report An Issue](https://github.com/DockYard-Academy/beta_curriculum/issues/new?assignees=&labels=&template=issue.md&title=)
 
-## Setup
-
-Ensure you type the `ea` keyboard shortcut to evaluate all Elixir cells before starting. Alternatively you can evaluate the Elixir cells as you read.
-
 ## Booleans
 
 Booleans (BOO-LEE-ANS) are `true` and `false` values in your code. They are often useful for
@@ -58,6 +54,10 @@ is_powered = false
 
 Utils.visual(:light_control, is_powered)
 ```
+
+## Setup
+
+Ensure you type the `ea` keyboard shortcut to evaluate all Elixir cells before starting. Alternatively you can evaluate the Elixir cells as you read.
 
 ## Boolean Operators
 
@@ -141,19 +141,19 @@ is_morning and is_sunny and is_subscribed
 In the Elixir cell below, compare `true and true`.
 
 ```elixir
-
+true and true
 ```
 
 Compare `true and false`.
 
 ```elixir
-
+true and false
 ```
 
 Compare `false and false`.
 
 ```elixir
-
+false and false
 ```
 
 ### Your Turn `or`
@@ -161,19 +161,19 @@ Compare `false and false`.
 In the Elixir cell below, compare `false or true`.
 
 ```elixir
-
+false or true
 ```
 
 Compare `true or true`.
 
 ```elixir
-
+true or true
 ```
 
 Compare `false or false`.
 
 ```elixir
-
+false or false
 ```
 
 ### Your Turn `not`
@@ -183,13 +183,13 @@ Compare `false or false`.
 In the Elixir cell below, evaluate `not true`.
 
 ```elixir
-
+not true
 ```
 
 Evaluate `not false`.
 
 ```elixir
-
+not false
 ```
 
 ### Combining Boolean Operators
@@ -213,13 +213,13 @@ flowchart LR
 ```
 
 ```elixir
-
+true and not false
 ```
 
 Compare `false or not true`
 
 ```elixir
-
+false or not true
 ```
 
 ## Truthy and Falsy
@@ -279,50 +279,50 @@ for booleans, and `&&`, `||`, and `!` when you expect non-boolean values.
 In the Elixir cell below, compare `7 && 8`
 
 ```elixir
-
+7 && 8
 ```
 
 Compare `7 || 8`.
 
 ```elixir
-
+7 || 8
 ```
 
 Compare `nil || 10`.
 
 ```elixir
-
+nil || 10
 ```
 
 Compare `true && 20`.
 
 ```elixir
-
+true && 20
 ```
 
 Compare `10 || "hello"`.
 
 ```elixir
-
+10 || "hello"
 ```
 
 Evaluate `!20`.
 
 ```elixir
-
+!20
 ```
 
 Evaluate `!nil`.
 
 ```elixir
-
+!nil
 ```
 
 Evaluate `!!30`. Notice that you can use this to convert a truthy to `true` and a falsy to `false`.
 This is useful if you ever need to convert some non-boolean data into a boolean.
 
 ```elixir
-
+!!30
 ```
 
 ## Commit Your Progress
