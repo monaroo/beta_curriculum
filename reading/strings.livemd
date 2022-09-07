@@ -60,7 +60,7 @@ In the Elixir cell below, create a string `"Hello, world!"`. This is a rite of p
 programmer.
 
 ```elixir
-
+"hello, world!"
 ```
 
 ## String Operators
@@ -90,9 +90,9 @@ So `"Peter"` would be come `"Hi, Peter."`.
 Replace `nil` with your answer.
 
 ```elixir
-answer = nil
+answer = "Hi," <> "Peter."
 
-Utils.feedback(:string_concatenation, answer)
+# Utils.feedback(:string_concatenation, answer)
 ```
 
 ### String Interpolation
@@ -115,7 +115,7 @@ Otherwise, it's easy to make mistakes.
 Notice that there's a grammar mistake below that could easily be missed when using string concatenation.
 
 ```elixir
-"I have" <> "8" <> "apples"
+"I have" <> " 8 " <> "apples"
 ```
 
 ### Your Turn
@@ -126,9 +126,10 @@ X is the number of people in your cohort including yourself.
 Replace `nil` with your answer.
 
 ```elixir
-answer = nil
+# answer = 
+"i have #{10 - 1} classmates."
 
-Utils.feedback(:string_interpolation, answer)
+# Utils.feedback(:string_interpolation, answer)
 ```
 
 ## Commit Your Progress
