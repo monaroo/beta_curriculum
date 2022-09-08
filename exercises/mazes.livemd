@@ -56,7 +56,7 @@ atom_maze = %{
   }
 }
 
-path = nil
+path = atom_maze.south.west.south.east.south.east.south
 
 Utils.feedback(:atom_maze, [atom_maze, path])
 ```
@@ -92,7 +92,7 @@ string_maze = %{
   }
 }
 
-path = nil
+path = string_maze["south"]["east"]["south"]["west"]["south"]["west"]["south"]["east"]["south"]
 
 Utils.feedback(:string_maze, [string_maze, path])
 ```
@@ -110,11 +110,46 @@ at least a 5 * 5 in width and height.
 Replace `nil` with your answers below.
 
 ```elixir
-custom_maze = nil
+custom_maze = %{
+  "south" => %{
+    "east" => %{
+      "south" => %{
+        "west" => %{
+          "south" => "exit !!"
+        }
+      }
+    }
+  }
+}
 
-path = nil
+path = custom_maze["south"]["east"]["south"]["west"]["south"]
+```
 
-Utils.feedback(:custom_maze, [custom_maze, nil])
+```elixir
+custom_maze = %{
+  "south" => %{
+    "east" => %{
+      "south" => %{
+        "west" => %{
+          
+                "south" => "exit !!" 
+
+                
+              }
+            }
+          }
+        }
+      }
+    
+
+
+
+path = custom_maze["south"]["east"]["south"]["west"]["south"]
+
+
+
+
+Utils.feedback(:custom_maze, [custom_maze, nil], )
 ```
 
 ## Treasure Map
@@ -145,6 +180,24 @@ Replace `nil` with your answer below.
 treasure_map = %{
   "south ten paces" => %{
     10 => %{
+      "east three paces" => %{
+        "1, 2, 3" => %{
+          {"turn", "right"} => %{
+            :dig => "gold"
+          }
+        }
+      }
+    }
+  }
+}
+
+path = treasure_map["south ten paces"][10]["east three paces"]["1, 2, 3"][{"turn", "right"}][:dig]
+```
+
+```elixir
+treasure_map = %{
+  "south ten paces" => %{
+    10 => %{
       :"east three paces" => %{
         [1, 2, 3] => %{
           {"turn", "right"} => %{
@@ -156,7 +209,7 @@ treasure_map = %{
   }
 }
 
-path = nil
+path = treasure_map["south ten paces"][10][:"east three paces"][1][2][3][{"turn", "right"}][:dig]
 
 Utils.feedback(:treasure_map, [treasure_map, path])
 ```
@@ -188,8 +241,8 @@ Replace `nil` with your answer below.
 treasure_map = %{
   "south ten paces" => %{
     10 => %{
-      :"east three paces" => %{
-        [1, 2, 3] => %{
+      "east three paces" => %{
+        "1, 2, 3" => %{
           {"turn", "right"} => %{
             :dig => "gold"
           }
@@ -199,7 +252,37 @@ treasure_map = %{
   }
 }
 
-updated_map = %{}
+# updated_map = %{treasure_map | "south ten paces" => %{ 10 => %{"east three paces"  => %{} => %{{"turn", "right"} => %{:dig}}}}}
+updated_map = %{
+  treasure_map
+  | "south ten paces" => %{
+      10 => %{
+        "east three paces" => %{
+          "1, 2, 3" => %{
+            {"turn", "right"} => %{:dig => "taken"}
+          }
+        }
+      }
+    }
+}
+```
+
+```elixir
+treasure_map = %{
+  "south ten paces" => %{
+    10 => %{
+      "east three paces" => %{
+        "1, 2, 3" => %{
+          {"turn", "right"} => %{
+            :dig => "gold"
+          }
+        }
+      }
+    }
+  }
+}
+
+updated_map = %{treasure_map | "south ten paces" => 10 %{"east three paces"} => %{"1, 2, 3"} => %{{"turn", "right"} => %{:dig}
 
 Utils.feedback(:update_treasure_map, [treasure_map, updated_map])
 ```
