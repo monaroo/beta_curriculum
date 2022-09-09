@@ -52,6 +52,14 @@ defmodule Greeter do
 end
 ```
 
+```elixir
+defmodule Greeter do
+  def hello do
+    "hello world"
+  end
+end
+```
+
 Let's break down the named function above.
 
 1. `def` this means "define function"
@@ -97,7 +105,13 @@ In the Elixir cell below, create a `Math` module with a function `add` that adds
 together.
 
 ```elixir
+defmodule Math do
+  def add(numbera, numberb) do
+    numbera + numberb
+  end
+end
 
+Math.add(5, 6)
 ```
 
 ## Internal Module Functions
@@ -144,7 +158,13 @@ defmodule InspectorGadget do
   def gogo(gadget) do
     "Go go gadget #{gadget}!"
   end
+
+  def arms do
+    gogo("arms")
+  end
 end
+
+InspectorGadget.arms()
 ```
 
 ## Private Functions
@@ -264,7 +284,13 @@ MyModule.SubModule.my_function()
 In the Elixir cell below, create two submodules under as single namespace.
 
 ```elixir
+defmodule Metroishka.Doll do
+  def smalldoll do
+    "peekaboo!"
+  end
+end
 
+Metroishka.Doll.smalldoll()
 ```
 
 ## Module Attributes
@@ -379,7 +405,7 @@ defmodule Hero do
   end
 end
 
-Hero.victory()
+Hero.catchphrase()
 ```
 
 If the module attribute value changes, you only need to change the module attribute.
@@ -435,7 +461,17 @@ Create a `Math` module with `add/2` and `add/3` functions. Each should add all o
 together.
 
 ```elixir
+defmodule Math do
+  def add2(a, b) do
+    a + b
+  end
 
+  def add3(a, b, c) do
+    a + b + c
+  end
+end
+
+Math.add3(4, 2, 6)
 ```
 
 ## Default Arguments
@@ -487,7 +523,7 @@ defmodule Greeter do
   end
 end
 
-Greeter.greet("HI")
+Greeter.greet("Hi,")
 ```
 
 ### Your Turn
@@ -495,7 +531,13 @@ Greeter.greet("HI")
 In the Elixir cell below, define a module with a function that uses a default argument.
 
 ```elixir
+defmodule Cheese do
+  def the_best_kind(type \\ "COLBY JAAAAAAACK") do
+    "Top 4 cheeses... number one, #{type}"
+  end
+end
 
+Cheese.the_best_kind()
 ```
 
 ## Commit Your Progress
