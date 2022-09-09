@@ -180,8 +180,8 @@ Replace `nil` with your answer below.
 treasure_map = %{
   "south ten paces" => %{
     10 => %{
-      "east three paces" => %{
-        "1, 2, 3" => %{
+      "east three paces": %{
+        [1, 2, 3] => %{
           {"turn", "right"} => %{
             :dig => "gold"
           }
@@ -191,7 +191,8 @@ treasure_map = %{
   }
 }
 
-path = treasure_map["south ten paces"][10]["east three paces"]["1, 2, 3"][{"turn", "right"}][:dig]
+path =
+  treasure_map["south ten paces"][10][:"east three paces"][[1, 2, 3]][{"turn", "right"}][:dig]
 ```
 
 ```elixir
@@ -242,7 +243,7 @@ treasure_map = %{
   "south ten paces" => %{
     10 => %{
       "east three paces" => %{
-        "1, 2, 3" => %{
+        [1, 2, 3] => %{
           {"turn", "right"} => %{
             :dig => "gold"
           }
@@ -253,18 +254,25 @@ treasure_map = %{
 }
 
 # updated_map = %{treasure_map | "south ten paces" => %{ 10 => %{"east three paces"  => %{} => %{{"turn", "right"} => %{:dig}}}}}
-updated_map = %{
-  treasure_map
-  | "south ten paces" => %{
-      10 => %{
-        "east three paces" => %{
-          "1, 2, 3" => %{
-            {"turn", "right"} => %{:dig => "taken"}
-          }
-        }
-      }
-    }
-}
+# updated_map = %{ treasure_map | "south ten paces" => %{
+# 10 => %{
+# "east three paces" => %{
+# [1, 2, 3] => %{
+# {"turn", "right"} => %{:dig => "taken"}
+# }
+# }
+# }
+# }
+# }
+
+# (fn x, y -> x + y end).(1, 2)
+add = fn x, y -> x + y end
+add.(3, 4)
+
+# updated_map2 = put_in(treasure_map,["south ten paces", 10, "east three paces", [1, 2, 3], {"turn", "right"}, :dig], "taken")
+# get_in(updated_map2,["south ten paces", 10, "east three paces", [1, 2, 3], {"turn", "right"}, :dig])
+
+# IO.puts("hello")
 ```
 
 ```elixir

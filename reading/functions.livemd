@@ -270,9 +270,16 @@ You can use <code>rem</code> to determine if an integer is even with <code>rem(i
 </details>
 
 ```elixir
-is_even? = nil
+is_even? = fn ->
+  number = 9
+  rem(number, 2) == 0
+end
 
-Utils.feedback(:is_even?, is_even?)
+is_even?.()
+```
+
+```elixir
+is_even? = Utils.feedback(:is_even?, is_even?)
 ```
 
 ## Multi-Parameter Functions
@@ -280,7 +287,7 @@ Utils.feedback(:is_even?, is_even?)
 Functions can accept multiple inputs. Separate parameters with commas `,` to create a multi-parameter function.
 
 ```elixir
-sum3 = fn param1, param2, param3 -> param1 + param2 + param3 end
+sum3 = fn param1, param2, param3 -> param1 * param2 * param3 end
 
 sum3.(2, 3, 4)
 ```
@@ -322,7 +329,13 @@ Create a multi-parameter `calculate_force/2` function.
 Replace `nil` with your anonymous function.
 
 ```elixir
-calculate_force = nil
+calculate_force = fn m, a -> m * a end
+calculate_force.(2, 9)
+```
+
+```elixir
+calculate_force = fn mass, acceleration -> mass * acceleration end
+calculate_force.(2, 2)
 
 Utils.feedback(:calculate_force, calculate_force)
 ```
@@ -357,7 +370,13 @@ Using shorthand syntax, create a `calculate_force` function which multiplies `ma
 Replace `nil` with your answer.
 
 ```elixir
-calculate_force = nil
+calculate_force = &(&1 * &2)
+calculate_force.(4, 5)
+```
+
+```elixir
+calculate_force = &(&1 * &2)
+calculate_force.(4, 5)
 
 Utils.feedback(:calculate_force, calculate_force)
 ```
@@ -403,7 +422,27 @@ argument and call that function with the integer `20`.
 Replace `nil` with your anonymous function.
 
 ```elixir
-call_with_20 = nil
+add1 = fn number -> number + 1 end
+# number = 1
+# add1.()
+
+call_with_20 = fn function -> function.(20) end
+# parameter = 20
+call_with_20.(add1)
+```
+
+```elixir
+call_with_20 = fn function, number ->
+  function.()
+  number
+end
+
+number = 20
+call_with_20.(double.(6), number)
+```
+
+```elixir
+call_with_20 = fn
 
 Utils.feedback(:call_with_20, call_with_20)
 ```
@@ -503,7 +542,27 @@ add = fn int1, int2 -> int1 + int2 end
 multiply = fn int1, int2 -> int1 * int2 end
 subtract = fn int1, int2 -> int1 - int2 end
 
-answer = nil
+answer = add.(2, 10)
+answer2 = multiply.(answer, 5)
+answer3 = subtract.(answer2, 4)
+
+answer =
+  2
+  |> add.(10)
+  |> multiply.(5)
+  |> subtract.(4)
+```
+
+```elixir
+add = fn int1, int2 -> int1 + int2 end
+multiply = fn int1, int2 -> int1 * int2 end
+subtract = fn int1, int2 -> int1 - int2 end
+
+answer =
+  2
+  |> add.(10)
+  |> multiply.(5)
+  |> subtract.(4)
 
 Utils.feedback(:pipe_operator, answer)
 ```
