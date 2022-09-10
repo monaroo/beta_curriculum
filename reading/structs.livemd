@@ -105,6 +105,14 @@ end
 %Person{}
 ```
 
+```elixir
+defmodule Person do
+  defstruct name: "Peter Parker"
+end
+
+%Person{}
+```
+
 It's common to validate data in a struct. For example, you can use the `@enforce_keys`
 module attribute to enforce that certain keys are set, other wise the struct will throw an error
 `the following keys must also be given when building struct Person: [:name]`.
@@ -146,7 +154,7 @@ defmodule Person do
   end
 end
 
-Person.new(25)
+Person.new("j")
 ```
 
 ### Module Functions
@@ -187,7 +195,41 @@ Person.greet(person)
   `"#{greeting} I am #{hero.name}"`
 
 ```elixir
+defmodule Hero do
+  defstruct [:name, :catchphrase, :secret_identity]
 
+  def reveal(hero) do
+    "i am secretly #{hero.secret_identity}."
+  end
+
+  def introduce(hero) do
+    "I am #{hero.name}. #{hero.catchphrase}!!!"
+  end
+
+  def introduce(hero, greeting) do
+    "#{greeting} I am #{hero.name}"
+  end
+end
+```
+
+```elixir
+tony = %Hero{name: "Iron Man", catchphrase: "Anything is possible", secret_identity: "Tony Stark"}
+Hero.reveal(tony)
+Hero.introduce(tony, "Hello")
+```
+
+```elixir
+defmodule Hero1 do
+  defstruct name: "Iron Man", catchphrase: "anything is possible", secret_identity: "Tony Stark"
+
+  def reveal1(:secret_identity) do
+    "i am secretly #{Hero.secret_identity()}."
+  end
+
+  def reveal2 do
+    "I am #{Hero.name()}. #{Hero.catchphrase()}!!!"
+  end
+end
 ```
 
 ### Your Turn
@@ -205,19 +247,23 @@ classDiagram
 ```
 
 ```elixir
-
+peter = %Hero{
+  name: "Spider Man",
+  catchphrase: "Friendly neighborhood Spiderman!",
+  secret_identity: "Peter Parker"
+}
 ```
 
 Use the `Hero.introduce/2` function on `spider_man`.
 
 ```elixir
-
+Hero.introduce(peter, "Sup")
 ```
 
 Use the `Hero.reveal/1` function on `spider_man`.
 
 ```elixir
-
+Hero.reveal(peter)
 ```
 
 ### Updating A Struct
