@@ -846,14 +846,14 @@ The conditions for `grade` should be:
 * 1-54 is a D
 
 ```elixir
-grade = 1_000_000
+grade = "👍"
 
 cond do
   grade >= 85 && grade <= 100 -> "A"
   grade >= 70 && grade <= 84 -> "B"
   grade >= 55 && grade <= 59 -> "C"
   grade >= 1 && grade <= 54 -> "D"
-  grade >= 0 || grade <= 101 -> "wut"
+  :else -> "wut"
 end
 ```
 

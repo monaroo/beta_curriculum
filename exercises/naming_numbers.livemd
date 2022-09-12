@@ -48,11 +48,13 @@ naming_numbers.(1)
 "one"
 ```
 
-<!-- livebook:{"break_markdown":true} -->
+```elixir
+
+```
 
 Replace `nil` with your anonymous function.
 
-<!-- livebook:{"attrs":{"assertions":"assert is_function(naming_numbers),\n  \"Ensure you bind `naming_numbers` to an anonymous function.\"\n\nlist = [\"zero\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"]\n\nEnum.each(1..9, fn integer ->\n  assert naming_numbers.(integer) == Enum.at(list, integer)\nend)","code":"naming_numbers = nil","solution":"naming_numbers = fn number ->\n  Enum.at(~w[zero one two three four five six seven eight nine], number)\nend\n"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"assertions":"assert is_function(naming_numbers),\n  \"Ensure you bind `naming_numbers` to an anonymous function.\"\n\nlist = [\"zero\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"]\n\nEnum.each(1..9, fn integer ->\n  assert naming_numbers.(integer) == Enum.at(list, integer)\nend)","attempts":9,"code":"naming_numbers = fn number ->\n  Enum.at(~w[zero one two three four five six seven eight nine], number)\nend\nnaming_numbers.(0)","solution":"naming_numbers = fn number ->\n  Enum.at(~w[zero one two three four five six seven eight nine], number)\nend\n","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -60,17 +62,66 @@ ExUnit.start(auto_run: false)
 defmodule Assertion do
   use ExUnit.Case
 
-  test "" do
-    naming_numbers = nil
+  test "Exercise" do
+    try do
+      Process.flag(:trap_exit, true)
 
-    assert is_function(naming_numbers),
-           "Ensure you bind `naming_numbers` to an anonymous function."
+      naming_numbers = fn number ->
+        Enum.at(~w[zero one two three four five six seven eight nine], number)
+      end
 
-    list = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+      naming_numbers.(0)
 
-    Enum.each(1..9, fn integer ->
-      assert naming_numbers.(integer) == Enum.at(list, integer)
-    end)
+      assert is_function(naming_numbers),
+             "Ensure you bind `naming_numbers` to an anonymous function."
+
+      list = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+
+      Enum.each(1..9, fn integer ->
+        assert naming_numbers.(integer) == Enum.at(list, integer)
+      end)
+    catch
+      error ->
+        flunk("""
+          Your solution threw the following error:
+
+          #{inspect(error)}
+        """)
+
+      :exit, {error, {GenServer, message_type, [_pid, message, _timeout]}} ->
+        flunk("""
+            GenServer crashed with the following error:
+
+            #{inspect(error)}
+
+            When it recieved: #{inspect(message)} #{message_type}
+
+            Likely you need to define the corresponding handler for #{inspect(message)}.
+
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
+
+              def handle_call(:message, _from, state) do
+                ...
+              end
+
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
+
+              GenServer.call(pid, :message)
+        """)
+
+      :exit, error ->
+        flunk("""
+          Unhandled exit with the following error:
+
+          #{inspect(error)}
+        """)
+    after
+      # all warnings and errors are printed to the previous Kino Frame
+      # to avoid cluttering the test results display.
+      Process.sleep(10)
+      Kino.render(Kino.Markdown.new("### Test Results 
+<hr/>"))
+    end
   end
 end
 
@@ -78,7 +129,12 @@ ExUnit.run()
 
 # Make variables and modules defined in the test available.
 # Also allows for exploration using the output of the cell.
-naming_numbers = nil
+# Unfortunately, this results in duplication of warnings.
+naming_numbers = fn number ->
+  Enum.at(~w[zero one two three four five six seven eight nine], number)
+end
+
+naming_numbers.(0)
 ```
 
 ## Numbering Names
@@ -120,7 +176,7 @@ flowchart
 
 Replace `nil` with your anonymous function.
 
-<!-- livebook:{"attrs":{"assertions":"list = [\"zero\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"]\ncapital_list = Enum.map(list, &String.capitalize/1)\n\nassert is_function(numbering_names),\n  \"Ensure you bind `naming_numbers` to an anonymous function.\"\n\nEnum.each(list, fn name ->\n  assert numbering_names.(name) ==\n    Enum.find_index(list, fn each -> each == String.downcase(name) end)\n  end)\n\nEnum.each(capital_list, fn name ->\n  assert numbering_names.(name) ==\n    Enum.find_index(list, fn each -> each == String.downcase(name) end)\n  end)","code":"numbering_names = nil","solution":"numbering_names = fn number ->\n  ~w[zero one two three four five six seven eight nine]\n  |> Enum.find_index(&(&1 == String.downcase(number)))\nend"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"assertions":"list = [\"zero\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"]\ncapital_list = Enum.map(list, &String.capitalize/1)\n\nassert is_function(numbering_names),\n  \"Ensure you bind `naming_numbers` to an anonymous function.\"\n\nEnum.each(list, fn name ->\n  assert numbering_names.(name) ==\n    Enum.find_index(list, fn each -> each == String.downcase(name) end)\n  end)\n\nEnum.each(capital_list, fn name ->\n  assert numbering_names.(name) ==\n    Enum.find_index(list, fn each -> each == String.downcase(name) end)\n  end)","attempts":9,"code":"numbering_names = fn number ->\n  ~w[zero one two three four five six seven eight nine]\n  |> Enum.find_index(&(&1 == String.downcase(number)))\nend\nnumbering_names.(\"one\")","solution":"numbering_names = fn number ->\n  ~w[zero one two three four five six seven eight nine]\n  |> Enum.find_index(&(&1 == String.downcase(number)))\nend","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -128,23 +184,73 @@ ExUnit.start(auto_run: false)
 defmodule Assertion do
   use ExUnit.Case
 
-  test "" do
-    numbering_names = nil
-    list = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-    capital_list = Enum.map(list, &String.capitalize/1)
+  test "Exercise" do
+    try do
+      Process.flag(:trap_exit, true)
 
-    assert is_function(numbering_names),
-           "Ensure you bind `naming_numbers` to an anonymous function."
+      numbering_names = fn number ->
+        ~w[zero one two three four five six seven eight nine]
+        |> Enum.find_index(&(&1 == String.downcase(number)))
+      end
 
-    Enum.each(list, fn name ->
-      assert numbering_names.(name) ==
-               Enum.find_index(list, fn each -> each == String.downcase(name) end)
-    end)
+      numbering_names.("one")
+      list = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+      capital_list = Enum.map(list, &String.capitalize/1)
 
-    Enum.each(capital_list, fn name ->
-      assert numbering_names.(name) ==
-               Enum.find_index(list, fn each -> each == String.downcase(name) end)
-    end)
+      assert is_function(numbering_names),
+             "Ensure you bind `naming_numbers` to an anonymous function."
+
+      Enum.each(list, fn name ->
+        assert numbering_names.(name) ==
+                 Enum.find_index(list, fn each -> each == String.downcase(name) end)
+      end)
+
+      Enum.each(capital_list, fn name ->
+        assert numbering_names.(name) ==
+                 Enum.find_index(list, fn each -> each == String.downcase(name) end)
+      end)
+    catch
+      error ->
+        flunk("""
+          Your solution threw the following error:
+
+          #{inspect(error)}
+        """)
+
+      :exit, {error, {GenServer, message_type, [_pid, message, _timeout]}} ->
+        flunk("""
+            GenServer crashed with the following error:
+
+            #{inspect(error)}
+
+            When it recieved: #{inspect(message)} #{message_type}
+
+            Likely you need to define the corresponding handler for #{inspect(message)}.
+
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
+
+              def handle_call(:message, _from, state) do
+                ...
+              end
+
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
+
+              GenServer.call(pid, :message)
+        """)
+
+      :exit, error ->
+        flunk("""
+          Unhandled exit with the following error:
+
+          #{inspect(error)}
+        """)
+    after
+      # all warnings and errors are printed to the previous Kino Frame
+      # to avoid cluttering the test results display.
+      Process.sleep(10)
+      Kino.render(Kino.Markdown.new("### Test Results 
+<hr/>"))
+    end
   end
 end
 
@@ -152,7 +258,13 @@ ExUnit.run()
 
 # Make variables and modules defined in the test available.
 # Also allows for exploration using the output of the cell.
-numbering_names = nil
+# Unfortunately, this results in duplication of warnings.
+numbering_names = fn number ->
+  ~w[zero one two three four five six seven eight nine]
+  |> Enum.find_index(&(&1 == String.downcase(number)))
+end
+
+numbering_names.("one")
 ```
 
 ## Commit Your Progress
