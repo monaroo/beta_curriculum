@@ -52,7 +52,70 @@ RockPaperScissorsLizardSpock.play(:lizard, :spock)
 ":lizard beats :spock"
 ```
 
-<!-- livebook:{"attrs":{"assertions":"assert Keyword.has_key?(RockPaperScissorsLizardSpock.__info__(:functions), :play),\n        \"Ensure you define the `play/2` function\"\n\ngame_permutations =\n  for player1 <- [:rock, :paper, :scissors, :lizard, :spock],\n      player2 <- [:rock, :paper, :scissors, :lizard, :spock] do\n    {player1, player2}\n  end\n\nbeats? = fn player1, player2 ->\n  {player1, player2} in [\n    {:rock, :scissors},\n    {:paper, :rock},\n    {:scissors, :paper},\n    {:rock, :lizard},\n    {:lizard, :spock},\n    {:scissors, :lizard},\n    {:lizard, :paper},\n    {:paper, :spock},\n    {:spock, :scissors},\n    {:spock, :rock}\n  ]\nend\n\nEnum.each(game_permutations, fn {p1, p2} ->\n  expected_result =\n    cond do\n      beats?.(p1, p2) -> \"#{p1} beats #{p2}.\"\n      beats?.(p2, p1) -> \"#{p2} beats #{p1}.\"\n      true -> \"Tie game!\"\n    end\n\n  actual = RockPaperScissorsLizardSpock.play(p1, p2)\n\n  assert actual == expected_result,\n          \"\"\"\n          Failed on RockPaperScissorsLizardSpock.play(:#{p1}, :#{p2}).\n          expected: #{inspect(expected_result)}\n          received: #{inspect(actual)}\n          \"\"\"\nend)","code":"defmodule RockPaperScissorsLizardSpock do\r\nend","solution":"defmodule RockPaperScissorsLizardSpock do\n  def play(a, b) do\n    cond do\n      beats?(a, b) -> \"#{a} beats #{b}.\"\n      beats?(b, a) -> \"#{b} beats #{a}.\"\n      true -> \"Tie game!\"\n    end\n  end\n\n  defp beats?(a, b) do\n    {a, b} in [\n      {:rock, :scissors},\n      {:paper, :rock},\n      {:scissors, :paper},\n      {:rock, :lizard},\n      {:lizard, :spock},\n      {:spock, :scissors},\n      {:scissors, :lizard},\n      {:lizard, :paper},\n      {:paper, :spock},\n      {:spock, :rock}\n    ]\n  end\nend"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+```elixir
+defmodule RockPaperScissorsLizardSpock do
+  def play(player1_choice, player2_choice) do
+    (player1_choice === :rock && player2_choice === :rock && "Draw") ||
+      (player1_choice === :paper && player2_choice === :paper && "Draw") ||
+      (player1_choice === :scissors && player2_choice === :scissors && "Draw") ||
+      (player1_choice === :lizard && player2_choice === :lizard && "Draw") ||
+      (player1_choice === :spock && player2_choice === :spock && "Draw") ||
+      (player1_choice === :rock && player2_choice === :paper && "paper beats rock") ||
+      (player1_choice === :rock && player2_choice === :scissors && "rock beats scissors") ||
+      (player1_choice === :rock && player2_choice === :lizard && "rock beats lizard") ||
+      (player1_choice === :rock && player2_choice === :spock && "spock beats rock") ||
+      (player1_choice === :paper && player2_choice === :rock && "paper beats rock") ||
+      (player1_choice === :paper && player2_choice === :spock && "paper beats spock") ||
+      (player1_choice === :paper && player2_choice === :scissors && "scissors beats paper") ||
+      (player1_choice === :paper && player2_choice === :lizard && "lizard beats paper") ||
+      (player1_choice === :scissors && player2_choice === :paper && "scissors beats paper") ||
+      (player1_choice === :scissors && player2_choice === :rock && "rock beats scissors") ||
+      (player1_choice === :scissors && player2_choice === :spock && "spock beats scissors") ||
+      (player1_choice === :scissors && player2_choice === :lizard && "scissors beats lizard") ||
+      (player1_choice === :lizard && player2_choice === :rock && "rock beats lizard") ||
+      (player1_choice === :lizard && player2_choice === :paper && "lizard beats paper") ||
+      (player1_choice === :lizard && player2_choice === :rock && "rock beats lizard") ||
+      (player1_choice === :lizard && player2_choice === :spock && "lizard beats spock") ||
+      (player1_choice === :spock && player2_choice === :rock && "spock beats rock") ||
+      (player1_choice === :spock && player2_choice === :paper && "paper beats spock") ||
+      (player1_choice === :spock && player2_choice === :scissors && "spock beats scissors") ||
+      (player1_choice === :spock && player2_choice === :lizard && "lizard beats spock") ||
+      (player1_choice === true && player2_choice === true && "...")
+  end
+end
+
+RockPaperScissorsLizardSpock.play(:spock, :paper)
+```
+
+```elixir
+defmodule RockPaperScissorsLizardSpock do
+  def beats(player1choice, player2choice) do
+    case(if)
+    :rock.beats(:scissors)
+    :rock.beats(:lizard)
+    :paper.beats(:rock)
+    :paper.beats(:spock)
+    :scissors.beats(:paper)
+    :scissors.beats(:lizard)
+    :lizard.beats(:spock)
+    :lizard.beats(:paper)
+    :spock.beats(:rock)
+    :spock.beats(:scissors)
+
+    if player1choice.beats(player2choice) do
+      "#{player1choice} beats #{player2choice}"
+    else
+      if player2choice.beats(player1choice) do
+        "#{player2choice} beats #{player1choice}"
+      end
+    end
+  end
+end
+
+RockPaperScissorsLizardSpock.beats(:scissors, :rock)
+```
+
+<!-- livebook:{"attrs":{"assertions":"assert Keyword.has_key?(RockPaperScissorsLizardSpock.__info__(:functions), :play),\n        \"Ensure you define the `play/2` function\"\n\ngame_permutations =\n  for player1 <- [:rock, :paper, :scissors, :lizard, :spock],\n      player2 <- [:rock, :paper, :scissors, :lizard, :spock] do\n    {player1, player2}\n  end\n\nbeats? = fn player1, player2 ->\n  {player1, player2} in [\n    {:rock, :scissors},\n    {:paper, :rock},\n    {:scissors, :paper},\n    {:rock, :lizard},\n    {:lizard, :spock},\n    {:scissors, :lizard},\n    {:lizard, :paper},\n    {:paper, :spock},\n    {:spock, :scissors},\n    {:spock, :rock}\n  ]\nend\n\nEnum.each(game_permutations, fn {p1, p2} ->\n  expected_result =\n    cond do\n      beats?.(p1, p2) -> \"#{p1} beats #{p2}.\"\n      beats?.(p2, p1) -> \"#{p2} beats #{p1}.\"\n      true -> \"Tie game!\"\n    end\n\n  actual = RockPaperScissorsLizardSpock.play(p1, p2)\n\n  assert actual == expected_result,\n          \"\"\"\n          Failed on RockPaperScissorsLizardSpock.play(:#{p1}, :#{p2}).\n          expected: #{inspect(expected_result)}\n          received: #{inspect(actual)}\n          \"\"\"\nend)","attempts":1,"code":"defmodule RockPaperScissorsLizardSpock do\n  def play(player1choice, player2choice) do\n  cond (player1_choice === :rock && player2_choice === :rock && \"Draw\") ||\n       (player1_choice === :paper && player2_choice === :paper && \"Draw\") ||\n       (player1_choice === :scissors && player2_choice === :scissors && \"Draw\") ||\n       (player1_choice === :lizard && player2_choice === :lizard && \"Draw\") ||\n       (player1_choice === :spock && player2_choice === :spock && \"Draw\") ||\n\n       (player1_choice === :rock && player2_choice === :paper && \"paper beats rock\") ||\n       (player1_choice === :paper && player2_choice === :rock && \"paper beats rock\") ||\n       (player1_choice === :paper && player2_choice === :spock && \"paper beats spock\") ||\n       (player1_choice === :rock && player2_choice === :paper && \"paper beats rock\") ||\n\n       (player1_choice === :rock && player2_choice === :scissors && \"rock beats scissors\") ||\n       (player1_choice === :paper && player2_choice === \"Scissors\" && \"Player2\") ||\n       (player1_choice === \"Scissors\" && player2_choice === :rock && \"Player2\") ||\n       (player1_choice === :rock && player2_choice === \"Lizard\" && \"rock beats lizard\") ||\n       (player1_choice === \"Lizard\" && player2_choice === :rock && \"rock beats lizard\") ||\n  end\n   def beats(player1choice, player2choice) do \n    :rock > :scissors\n    :rock > :lizard\n    :paper > :rock\n    :paper > :spock\n    :scissors > :paper\n    :scissors > :lizard\n    :lizard > :spock\n    :lizard > :paper\n    :spock > :rock\n    :spock > :scissors\n    if player1choice > player2choice do \n      \"#{player1choice} beats #{player2choice}\"\n    else do \"#{player2choice} beats #{player1choice}\"\n    end\n   end\nend\n\nRockPaperScissorsLizardSpock.beats(:scissors, :rock)","solution":"defmodule RockPaperScissorsLizardSpock do\n  def play(a, b) do\n    cond do\n      beats?(a, b) -> \"#{a} beats #{b}.\"\n      beats?(b, a) -> \"#{b} beats #{a}.\"\n      true -> \"Tie game!\"\n    end\n  end\n\n  defp beats?(a, b) do\n    {a, b} in [\n      {:rock, :scissors},\n      {:paper, :rock},\n      {:scissors, :paper},\n      {:rock, :lizard},\n      {:lizard, :spock},\n      {:spock, :scissors},\n      {:scissors, :lizard},\n      {:lizard, :paper},\n      {:paper, :spock},\n      {:spock, :rock}\n    ]\n  end\nend","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -60,51 +123,129 @@ ExUnit.start(auto_run: false)
 defmodule Assertion do
   use ExUnit.Case
 
-  test "" do
-    defmodule RockPaperScissorsLizardSpock do
+  test "Exercise" do
+    try do
+      Process.flag(:trap_exit, true)
+      defmodule RockPaperScissorsLizardSpock do
+  def play(player1choice, player2choice) do
+  cond (player1_choice === :rock && player2_choice === :rock && "Draw") ||
+       (player1_choice === :paper && player2_choice === :paper && "Draw") ||
+       (player1_choice === :scissors && player2_choice === :scissors && "Draw") ||
+       (player1_choice === :lizard && player2_choice === :lizard && "Draw") ||
+       (player1_choice === :spock && player2_choice === :spock && "Draw") ||
+
+       (player1_choice === :rock && player2_choice === :paper && "paper beats rock") ||
+       (player1_choice === :paper && player2_choice === :rock && "paper beats rock") ||
+       (player1_choice === :paper && player2_choice === :spock && "paper beats spock") ||
+       (player1_choice === :rock && player2_choice === :paper && "paper beats rock") ||
+
+       (player1_choice === :rock && player2_choice === :scissors && "rock beats scissors") ||
+       (player1_choice === :paper && player2_choice === "Scissors" && "Player2") ||
+       (player1_choice === "Scissors" && player2_choice === :rock && "Player2") ||
+       (player1_choice === :rock && player2_choice === "Lizard" && "rock beats lizard") ||
+       (player1_choice === "Lizard" && player2_choice === :rock && "rock beats lizard") ||
+  end
+   def beats(player1choice, player2choice) do 
+    :rock > :scissors
+    :rock > :lizard
+    :paper > :rock
+    :paper > :spock
+    :scissors > :paper
+    :scissors > :lizard
+    :lizard > :spock
+    :lizard > :paper
+    :spock > :rock
+    :spock > :scissors
+    if player1choice > player2choice do 
+      "#{player1choice} beats #{player2choice}"
+    else do "#{player2choice} beats #{player1choice}"
+    end
+   end
+end
+
+RockPaperScissorsLizardSpock.beats(:scissors, :rock)
+      assert Keyword.has_key?(RockPaperScissorsLizardSpock.__info__(:functions), :play),
+        "Ensure you define the `play/2` function"
+
+game_permutations =
+  for player1 <- [:rock, :paper, :scissors, :lizard, :spock],
+      player2 <- [:rock, :paper, :scissors, :lizard, :spock] do
+    {player1, player2}
+  end
+
+beats? = fn player1, player2 ->
+  {player1, player2} in [
+    {:rock, :scissors},
+    {:paper, :rock},
+    {:scissors, :paper},
+    {:rock, :lizard},
+    {:lizard, :spock},
+    {:scissors, :lizard},
+    {:lizard, :paper},
+    {:paper, :spock},
+    {:spock, :scissors},
+    {:spock, :rock}
+  ]
+end
+
+Enum.each(game_permutations, fn {p1, p2} ->
+  expected_result =
+    cond do
+      beats?.(p1, p2) -> "#{p1} beats #{p2}."
+      beats?.(p2, p1) -> "#{p2} beats #{p1}."
+      true -> "Tie game!"
     end
 
-    assert Keyword.has_key?(RockPaperScissorsLizardSpock.__info__(:functions), :play),
-           "Ensure you define the `play/2` function"
+  actual = RockPaperScissorsLizardSpock.play(p1, p2)
 
-    game_permutations =
-      for player1 <- [:rock, :paper, :scissors, :lizard, :spock],
-          player2 <- [:rock, :paper, :scissors, :lizard, :spock] do
-        {player1, player2}
-      end
+  assert actual == expected_result,
+          """
+          Failed on RockPaperScissorsLizardSpock.play(:#{p1}, :#{p2}).
+          expected: #{inspect(expected_result)}
+          received: #{inspect(actual)}
+          """
+end)
+    catch
+      error ->
+        flunk("""
+          Your solution threw the following error:
 
-    beats? = fn player1, player2 ->
-      {player1, player2} in [
-        {:rock, :scissors},
-        {:paper, :rock},
-        {:scissors, :paper},
-        {:rock, :lizard},
-        {:lizard, :spock},
-        {:scissors, :lizard},
-        {:lizard, :paper},
-        {:paper, :spock},
-        {:spock, :scissors},
-        {:spock, :rock}
-      ]
+          #{inspect(error)}
+        """)
+
+      :exit, {error, {GenServer, message_type, [_pid, message, _timeout]}} ->
+          flunk("""
+            GenServer crashed with the following error:
+
+            #{inspect(error)}
+
+            When it recieved: #{inspect(message)} #{message_type}
+
+            Likely you need to define the corresponding handler for #{inspect(message)}.
+
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
+
+              def handle_call(:message, _from, state) do
+                ...
+              end
+
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
+
+              GenServer.call(pid, :message)
+        """)
+      :exit, error ->
+        flunk("""
+          Unhandled exit with the following error:
+
+          #{inspect(error)}
+        """)
+    after
+      # all warnings and errors are printed to the previous Kino Frame
+      # to avoid cluttering the test results display.
+      Process.sleep(10)
+      Kino.render(Kino.Markdown.new("### Test Results 
+<hr/>"))
     end
-
-    Enum.each(game_permutations, fn {p1, p2} ->
-      expected_result =
-        cond do
-          beats?.(p1, p2) -> "#{p1} beats #{p2}."
-          beats?.(p2, p1) -> "#{p2} beats #{p1}."
-          true -> "Tie game!"
-        end
-
-      actual = RockPaperScissorsLizardSpock.play(p1, p2)
-
-      assert actual == expected_result,
-             """
-             Failed on RockPaperScissorsLizardSpock.play(:#{p1}, :#{p2}).
-             expected: #{inspect(expected_result)}
-             received: #{inspect(actual)}
-             """
-    end)
   end
 end
 
@@ -112,8 +253,46 @@ ExUnit.run()
 
 # Make variables and modules defined in the test available.
 # Also allows for exploration using the output of the cell.
+# Unfortunately, this results in duplication of warnings.
 defmodule RockPaperScissorsLizardSpock do
+  def play(player1choice, player2choice) do
+  cond (player1_choice === :rock && player2_choice === :rock && "Draw") ||
+       (player1_choice === :paper && player2_choice === :paper && "Draw") ||
+       (player1_choice === :scissors && player2_choice === :scissors && "Draw") ||
+       (player1_choice === :lizard && player2_choice === :lizard && "Draw") ||
+       (player1_choice === :spock && player2_choice === :spock && "Draw") ||
+
+       (player1_choice === :rock && player2_choice === :paper && "paper beats rock") ||
+       (player1_choice === :paper && player2_choice === :rock && "paper beats rock") ||
+       (player1_choice === :paper && player2_choice === :spock && "paper beats spock") ||
+       (player1_choice === :rock && player2_choice === :paper && "paper beats rock") ||
+
+       (player1_choice === :rock && player2_choice === :scissors && "rock beats scissors") ||
+       (player1_choice === :paper && player2_choice === "Scissors" && "Player2") ||
+       (player1_choice === "Scissors" && player2_choice === :rock && "Player2") ||
+       (player1_choice === :rock && player2_choice === "Lizard" && "rock beats lizard") ||
+       (player1_choice === "Lizard" && player2_choice === :rock && "rock beats lizard") ||
+  end
+   def beats(player1choice, player2choice) do 
+    :rock > :scissors
+    :rock > :lizard
+    :paper > :rock
+    :paper > :spock
+    :scissors > :paper
+    :scissors > :lizard
+    :lizard > :spock
+    :lizard > :paper
+    :spock > :rock
+    :spock > :scissors
+    if player1choice > player2choice do 
+      "#{player1choice} beats #{player2choice}"
+    else do "#{player2choice} beats #{player1choice}"
+    end
+   end
 end
+
+RockPaperScissorsLizardSpock.beats(:scissors, :rock)
+
 ```
 
 ## Commit Your Progress
