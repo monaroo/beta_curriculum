@@ -89,6 +89,39 @@ RockPaperScissorsLizardSpock.play(:spock, :paper)
 
 ```elixir
 defmodule RockPaperScissorsLizardSpock do
+  def play(c, d) when c == d do
+    "draw"
+  end
+
+  def play(a, b) do
+    if beats(a, b) do
+      "#{a} beats #{b}"
+    else
+      "#{b} beats #{a}"
+    end
+  end
+
+  def beats(a, b) do
+    {a, b} in [
+      {:rock, :scissors},
+      {:scissors, :paper},
+      {:paper, :rock},
+      {:rock, :lizard},
+      {:lizard, :spock},
+      {:spock, :scissors},
+      {:scissors, :lizard},
+      {:lizard, :paper},
+      {:paper, :spock},
+      {:spock, :rock}
+    ]
+  end
+end
+
+RockPaperScissorsLizardSpock.play(:lizard, :scissors)
+```
+
+```elixir
+defmodule RockPaperScissorsLizardSpock do
   def beats(player1choice, player2choice) do
     case(if)
     :rock.beats(:scissors)
