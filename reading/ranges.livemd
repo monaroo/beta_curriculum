@@ -97,7 +97,7 @@ Here's the same range converted into a list to help you visualize it. Once again
 learn more about what `Enum.to_list` is in a future lesson.
 
 ```elixir
-Enum.to_list(0..10//2)
+Enum.to_list(10..100//5)
 ```
 
 ### Your Turn
@@ -106,7 +106,11 @@ In the Elixir cell below, use `Enum.to_list` to convert a range from `3` to `9` 
 Replace `nil` with your answer.
 
 ```elixir
-answer = nil
+Enum.to_list(3..9//3)
+```
+
+```elixir
+answer = Enum.to_list(3..9//3)
 
 Utils.feedback(:range_to_list, answer)
 ```
