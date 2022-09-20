@@ -40,7 +40,7 @@ Integer.digits(123)
 In the Elixir cell below, convert the integer `4389` into a list of digits.
 
 ```elixir
-
+Integer.digits(4389)
 ```
 
 ### Tuples
@@ -85,7 +85,7 @@ You can find the code point of any character by using `?` in Elixir. Evaluate th
 to see how `?a` returns `97`.
 
 ```elixir
-?a
+?&
 ```
 
 If you are curious, the full list of representable characters is called the [The Unicode Standard](https://unicode.org/standard/standard.html).
@@ -143,7 +143,7 @@ Now your string is an enumerable list of characters.
 In the Elixir cell below, convert the string `"Hello, world!"` into a list of single characters.
 
 ```elixir
-
+String.split("hello, world!", "", trim: true)
 ```
 
 ## Commit Your Progress
