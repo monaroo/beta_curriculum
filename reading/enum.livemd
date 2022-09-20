@@ -191,7 +191,13 @@ Use [Enum.map/2](https://hexdocs.pm/elixir/1.12/Enum.html#map/2) to convert ever
 
 Bind `string_list` to your answer.
 
-<!-- livebook:{"attrs":{"assertions":"","attempts":1,"code":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9]\r\n\r\nstring_list = nil","solution":"","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+```elixir
+list = %{"1" => 1, "2" => 2, "3" => 3, "4" => 4, "5" => 5, "6" => 6, "7" => 7, "8" => 8, "9" => 9}
+
+string_list = Enum.map(list, fn {key, _value} -> key end)
+```
+
+<!-- livebook:{"attrs":{"assertions":"","attempts":1,"code":"il","solution":"","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -202,9 +208,7 @@ defmodule Assertion do
   test "Exercise" do
     try do
       Process.flag(:trap_exit, true)
-      list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-      string_list = nil
+      il
     catch
       error ->
         flunk("""
@@ -219,17 +223,17 @@ defmodule Assertion do
 
             #{inspect(error)}
 
-            When it received: #{inspect(message)} #{message_type}
+            When it recieved: #{inspect(message)} #{message_type}
 
             Likely you need to define the corresponding handler for #{inspect(message)}.
 
-            Ensure you defined a `handle_call/3`, `handle_info/2`, or `handle_cast/2` or appropriate handler function.
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
 
               def handle_call(:message, _from, state) do
                 ...
               end
 
-            Then ensure you call [GenServer.call/2](https://hexdocs.pm/elixir/GenServer.html#call/2), [GenServer.cast/2](https://hexdocs.pm/elixir/GenServer.html#cast/2), or otherwise send the message correctly.
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
 
               GenServer.call(pid, :message)
         """)
@@ -255,9 +259,7 @@ ExUnit.run()
 # Make variables and modules defined in the test available.
 # Also allows for exploration using the output of the cell.
 # Unfortunately, this results in duplication of warnings.
-list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-string_list = nil
+il
 ```
 
 ### Your Turn
@@ -272,7 +274,36 @@ Next, try changing `list` to `[1, 2, 3, 4, 5, 6, 7, 8, 9]` and ensure your solut
 [one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9]
 ```
 
-<!-- livebook:{"attrs":{"assertions":"case list do\n    [1, 2] -> \n         assert keyword_list == [one: 1, two: 2]\n    [1, 2, 3, 4, 5, 6, 7, 8, 9] ->\n        assert keyword_list == [one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9]\n    _ -> flunk(\"`list` should be either [1, 2] or [1, 2, 3, 4, 5, 6, 7, 8, 9]\")\nend","attempts":4,"code":"list = [1, 2]\r\n\r\nkeyword_list = nil","solution":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9]\n\nkeyword_list = Enum.map(list, fn integer ->\n  key = case integer do\n    1 -> :one\n    2 -> :two\n    3 -> :three\n    4 -> :four\n    5 -> :five\n    6 -> :six\n    7 -> :seven\n    8 -> :eight\n    9 -> :nine\n  end\n\n  {key, integer}\nend)","title":"Create A Keyword List"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+```elixir
+list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+keyword_list =
+  Enum.map(list, fn
+    1 -> {:one, 1}
+    2 -> {:two, 2}
+    3 -> {:three, 3}
+    4 -> {:four, 4}
+    5 -> {:five, 5}
+    6 -> {:six, 6}
+    7 -> {:seven, 7}
+    8 -> {:eight, 8}
+    9 -> {:nine, 9}
+  end)
+```
+
+```elixir
+my_fun = fn
+  l when is_list(l) -> Enum.map(l, fn x -> x + 1 end)
+  {x, y} -> {x + 1, y}
+  x -> x + 1
+end
+
+my_fun.(1)
+# => 2
+my_fun.([1])
+```
+
+<!-- livebook:{"attrs":{"assertions":"case list do\n    [1, 2] -> \n         assert keyword_list == [one: 1, two: 2]\n    [1, 2, 3, 4, 5, 6, 7, 8, 9] ->\n        assert keyword_list == [one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9]\n    _ -> flunk(\"`list` should be either [1, 2] or [1, 2, 3, 4, 5, 6, 7, 8, 9]\")\nend","attempts":1,"code":"list = [1, 2]\r\n\r\nkeyword_list = nil","solution":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9]\n\nkeyword_list = Enum.map(list, fn integer ->\n  key = case integer do\n    1 -> :one\n    2 -> :two\n    3 -> :three\n    4 -> :four\n    5 -> :five\n    6 -> :six\n    7 -> :seven\n    8 -> :eight\n    9 -> :nine\n  end\n\n  {key, integer}\nend)","title":"Create A Keyword List"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -321,17 +352,17 @@ defmodule Assertion do
 
             #{inspect(error)}
 
-            When it received: #{inspect(message)} #{message_type}
+            When it recieved: #{inspect(message)} #{message_type}
 
             Likely you need to define the corresponding handler for #{inspect(message)}.
 
-            Ensure you defined a `handle_call/3`, `handle_info/2`, or `handle_cast/2` or appropriate handler function.
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
 
               def handle_call(:message, _from, state) do
                 ...
               end
 
-            Then ensure you call [GenServer.call/2](https://hexdocs.pm/elixir/GenServer.html#call/2), [GenServer.cast/2](https://hexdocs.pm/elixir/GenServer.html#cast/2), or otherwise send the message correctly.
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
 
               GenServer.call(pid, :message)
         """)
@@ -457,7 +488,20 @@ Enum.reduce([1, 2, 3], 10, fn integer, accumulator -> integer + accumulator end)
 
 Use [Enum.reduce/3](https://hexdocs.pm/elixir/Enum.html#reduce/3) or [Enum.reduce/2](https://hexdocs.pm/elixir/Enum.html#reduce/2) to sum all of the even numbers in the `list`.
 
-<!-- livebook:{"attrs":{"assertions":"assert list == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], \"The `list` should be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\"\nassert sum == 2 + 4 + 6  + 8 + 10","attempts":3,"code":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\r\n\r\nsum = nil","solution":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\n\nEnum.reduce(list, 0, fn int, acc ->\n  if rem(int, 2) == 0 do\n    acc + int\n  else\n    acc\n  end\nend)","title":"Sum Even Numbers"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+```elixir
+list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+sum =
+  Enum.reduce(list, 0, fn integer, acc ->
+    if rem(integer, 2) == 0 do
+      integer + acc
+    else
+      acc
+    end
+  end)
+```
+
+<!-- livebook:{"attrs":{"assertions":"assert list == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], \"The `list` should be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\"\nassert sum == 2 + 4 + 6  + 8 + 10","attempts":1,"code":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\r\n\r\nsum Enum.reduce(fn list, accumulator -> list + accumulator end)il","solution":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\n\nEnum.reduce(list, 0, fn int, acc ->\n  if rem(int, 2) == 0 do\n    acc + int\n  else\n    acc\n  end\nend)","title":"Sum Even Numbers"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -470,12 +514,9 @@ defmodule Assertion do
       Process.flag(:trap_exit, true)
       list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-      sum = nil
-
-      assert list == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-             "The `list` should be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-
-      assert sum == 2 + 4 + 6 + 8 + 10
+sum Enum.reduce(fn list, accumulator -> list + accumulator end)il
+      assert list == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "The `list` should be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+assert sum == 2 + 4 + 6  + 8 + 10
     catch
       error ->
         flunk("""
@@ -485,26 +526,25 @@ defmodule Assertion do
         """)
 
       :exit, {error, {GenServer, message_type, [_pid, message, _timeout]}} ->
-        flunk("""
+          flunk("""
             GenServer crashed with the following error:
 
             #{inspect(error)}
 
-            When it received: #{inspect(message)} #{message_type}
+            When it recieved: #{inspect(message)} #{message_type}
 
             Likely you need to define the corresponding handler for #{inspect(message)}.
 
-            Ensure you defined a `handle_call/3`, `handle_info/2`, or `handle_cast/2` or appropriate handler function.
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
 
               def handle_call(:message, _from, state) do
                 ...
               end
 
-            Then ensure you call [GenServer.call/2](https://hexdocs.pm/elixir/GenServer.html#call/2), [GenServer.cast/2](https://hexdocs.pm/elixir/GenServer.html#cast/2), or otherwise send the message correctly.
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
 
               GenServer.call(pid, :message)
         """)
-
       :exit, error ->
         flunk("""
           Unhandled exit with the following error:
@@ -528,7 +568,8 @@ ExUnit.run()
 # Unfortunately, this results in duplication of warnings.
 list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-sum = nil
+sum Enum.reduce(fn list, accumulator -> list + accumulator end)il
+
 ```
 
 ## Enum.filter
@@ -553,7 +594,14 @@ Enum.filter([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], fn integer -> integer <= 5 end)
 
 use [Enum.filter/2](https://hexdocs.pm/elixir/Enum.html#filter/2) to create a list of `odd_numbers` and a list of `even_numbers` using the following `list`.
 
-<!-- livebook:{"attrs":{"assertions":"assert list == [1, 2, 3, 4, 5, 6, 7, 8, 9], \"`list` should be [1, 2, 3, 4, 5, 6, 7, 8, 9].\"\nassert odd_numbers == [1, 3, 5, 7, 9]\nassert even_numbers == [2, 4, 6, 8]","attempts":9,"code":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9]\r\n\r\nodd_numbers = nil\r\n\r\neven_numbers = nil","solution":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9]\n\nodd_numbers = Enum.filter(list, fn int -> rem(int, 2) == 1 end)\n\neven_numbers = Enum.filter(list, fn int -> rem(int, 2) == 0 end)","title":"Filter Even Numbers"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+```elixir
+list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+even_numbers = Enum.filter(list, fn integer -> rem(integer, 2) == 0 end)
+odd_numbers = Enum.filter(list, fn integer -> rem(integer, 2) == 1 end)
+```
+
+<!-- livebook:{"attrs":{"assertions":"assert list == [1, 2, 3, 4, 5, 6, 7, 8, 9], \"`list` should be [1, 2, 3, 4, 5, 6, 7, 8, 9].\"\nassert odd_numbers == [1, 3, 5, 7, 9]\nassert even_numbers == [2, 4, 6, 8]","attempts":1,"code":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9]\r\n\r\nodd_numbers Enum.filter(list, fn integer -> if rem.(integer, 2) == 0 end)il\r\n\r\neven_numbers = nil","solution":"list = [1, 2, 3, 4, 5, 6, 7, 8, 9]\n\nodd_numbers = Enum.filter(list, fn int -> rem(int, 2) == 1 end)\n\neven_numbers = Enum.filter(list, fn int -> rem(int, 2) == 0 end)","title":"Filter Even Numbers"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -566,12 +614,12 @@ defmodule Assertion do
       Process.flag(:trap_exit, true)
       list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-      odd_numbers = nil
+odd_numbers Enum.filter(list, fn integer -> if rem.(integer, 2) == 0 end)il
 
-      even_numbers = nil
+even_numbers = nil
       assert list == [1, 2, 3, 4, 5, 6, 7, 8, 9], "`list` should be [1, 2, 3, 4, 5, 6, 7, 8, 9]."
-      assert odd_numbers == [1, 3, 5, 7, 9]
-      assert even_numbers == [2, 4, 6, 8]
+assert odd_numbers == [1, 3, 5, 7, 9]
+assert even_numbers == [2, 4, 6, 8]
     catch
       error ->
         flunk("""
@@ -581,26 +629,25 @@ defmodule Assertion do
         """)
 
       :exit, {error, {GenServer, message_type, [_pid, message, _timeout]}} ->
-        flunk("""
+          flunk("""
             GenServer crashed with the following error:
 
             #{inspect(error)}
 
-            When it received: #{inspect(message)} #{message_type}
+            When it recieved: #{inspect(message)} #{message_type}
 
             Likely you need to define the corresponding handler for #{inspect(message)}.
 
-            Ensure you defined a `handle_call/3`, `handle_info/2`, or `handle_cast/2` or appropriate handler function.
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
 
               def handle_call(:message, _from, state) do
                 ...
               end
 
-            Then ensure you call [GenServer.call/2](https://hexdocs.pm/elixir/GenServer.html#call/2), [GenServer.cast/2](https://hexdocs.pm/elixir/GenServer.html#cast/2), or otherwise send the message correctly.
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
 
               GenServer.call(pid, :message)
         """)
-
       :exit, error ->
         flunk("""
           Unhandled exit with the following error:
@@ -624,9 +671,10 @@ ExUnit.run()
 # Unfortunately, this results in duplication of warnings.
 list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-odd_numbers = nil
+odd_numbers Enum.filter(list, fn integer -> if rem.(integer, 2) == 0 end)il
 
 even_numbers = nil
+
 ```
 
 ## Enum.all?/2 and Enum.any?/2
@@ -672,7 +720,7 @@ This means both can be performant with large lists, so long as they exit early.
 Evaluate the cell below, notice that it completes instantly. Then change `to_find` to `10000000`. Notice it takes significantly longer, because [Enum.any?/2](https://hexdocs.pm/elixir/Enum.html#any?/2) must check every element before it finally finds the last element that passes the condition.
 
 ```elixir
-to_find = 1
+to_find = 10_000_000
 
 Enum.any?(1..10_000_000, fn int -> int == to_find end)
 ```
@@ -682,7 +730,7 @@ Enum.any?(1..10_000_000, fn int -> int == to_find end)
 Evaluate the cell below, notice that it completes instantly, then change `to_find` to `10000000`. Notice it takes significantly longer, because [Enum.all/2](https://hexdocs.pm/elixir/Enum.html#all/2) must check every element before it finally finds the last element that fails the condition.
 
 ```elixir
-to_find = 1
+to_find = 10_000_000
 
 Enum.all?(1..10_000_000, fn int -> int < to_find end)
 ```
@@ -712,6 +760,7 @@ In the Elixir cell below, count the number of elements in the `collection`. It s
 
 ```elixir
 collection = [1, 2, 3, 4, 5]
+Enum.count(collection)
 ```
 
 ## Enum.find/3
@@ -738,7 +787,13 @@ Enum.find(["h", "e", "l", "l", "o"], 10, fn each -> is_integer(each) end)
 
 In the Elixir cell below, use [Enum.find/2](https://hexdocs.pm/elixir/Enum.html#find/2) to find the first even number in this list. Replace `nil` with your answer.
 
-<!-- livebook:{"attrs":{"assertions":"assert list == [1, 2, 3, 4, 5], \"`list` should be [1, 2, 3, 4, 5]\"\nassert found == 2","attempts":0,"code":"list = [1, 2, 3, 4, 5]\r\n\r\nfound = nil","solution":"Enum.find(list, fn int -> rem(int, 2) == 0 end)","title":"Find The Even Number"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+```elixir
+list = [1, 2, 3, 4, 5]
+
+found = Enum.find(list, fn int -> rem(int, 2) == 0 end)
+```
+
+<!-- livebook:{"attrs":{"assertions":"assert list == [1, 2, 3, 4, 5], \"`list` should be [1, 2, 3, 4, 5]\"\nassert found == 2","attempts":2,"code":"list = [1, 2, 3, 4, 5]\r\n\r\nfound Enum.find(list, fn int -> rem(int, 2) == 0 end)il","solution":"Enum.find(list, fn int -> rem(int, 2) == 0 end)","title":"Find The Even Number"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -751,9 +806,9 @@ defmodule Assertion do
       Process.flag(:trap_exit, true)
       list = [1, 2, 3, 4, 5]
 
-      found = nil
+found Enum.find(list, fn int -> rem(int, 2) == 0 end)il
       assert list == [1, 2, 3, 4, 5], "`list` should be [1, 2, 3, 4, 5]"
-      assert found == 2
+assert found == 2
     catch
       error ->
         flunk("""
@@ -763,26 +818,25 @@ defmodule Assertion do
         """)
 
       :exit, {error, {GenServer, message_type, [_pid, message, _timeout]}} ->
-        flunk("""
+          flunk("""
             GenServer crashed with the following error:
 
             #{inspect(error)}
 
-            When it received: #{inspect(message)} #{message_type}
+            When it recieved: #{inspect(message)} #{message_type}
 
             Likely you need to define the corresponding handler for #{inspect(message)}.
 
-            Ensure you defined a `handle_call/3`, `handle_info/2`, or `handle_cast/2` or appropriate handler function.
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
 
               def handle_call(:message, _from, state) do
                 ...
               end
 
-            Then ensure you call [GenServer.call/2](https://hexdocs.pm/elixir/GenServer.html#call/2), [GenServer.cast/2](https://hexdocs.pm/elixir/GenServer.html#cast/2), or otherwise send the message correctly.
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
 
               GenServer.call(pid, :message)
         """)
-
       :exit, error ->
         flunk("""
           Unhandled exit with the following error:
@@ -806,7 +860,8 @@ ExUnit.run()
 # Unfortunately, this results in duplication of warnings.
 list = [1, 2, 3, 4, 5]
 
-found = nil
+found Enum.find(list, fn int -> rem(int, 2) == 0 end)il
+
 ```
 
 ## Enum.random/1
@@ -823,6 +878,7 @@ In the Elixir cell below, use [Enum.random/1](https://hexdocs.pm/elixir/Enum.htm
 
 ```elixir
 collection = ["one", 3, {}]
+Enum.random(collection)
 ```
 
 ## Capture Operator and Module Functions
