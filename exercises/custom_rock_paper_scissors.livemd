@@ -166,7 +166,8 @@ end
 ]
 
   
-      end
+    
+  end
 
 end
       assert 3 == Keyword.get(CustomGame.__info__(:functions), :new),
@@ -299,7 +300,8 @@ end
 ]
 
   
-      end
+    
+  end
 
 end
 

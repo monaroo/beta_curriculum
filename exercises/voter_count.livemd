@@ -42,7 +42,15 @@ VoterCount.count([:apples, :oranges, :apples, :cats], :birds)
 0
 ```
 
-<!-- livebook:{"attrs":{"assertions":"assert VoterCount.count([], :test), \"Implement the `count` function.\"\n\nassert VoterCount.count([:dogs, :dogs, :dogs, :cats], :dogs) == 3,\n        \"failed on ([:dogs, :dogs, :dogs, :cats], :dogs)\"\n\nassert VoterCount.count([:dogs, :dogs, :dogs, :cats], :cats) == 1,\n        \"Failed on ([:dogs, :dogs, :dogs, :cats], :cats)\"\n\nassert VoterCount.count([:apples, :oranges, :apples, :cats], :birds) == 0,\n        \"Failed on ([:apples, :oranges, :apples, :cats], :birds)\"\n\nlist = Enum.map(1..10, fn _ -> Enum.random([:cat, :dog, :bird, :apple, :orange]) end)\nchoice = Enum.random([:cat, :dog, :bird, :apple, :orange])\nassert VoterCount.count(list, choice) == Enum.count(list, fn each -> each == choice end)","code":"defmodule VoterCount do\r\nend","solution":"defmodule VoterCount do\n  def count(votes, counted_vote), do: Enum.count(votes, &(&1 == counted_vote))\nend"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+```elixir
+defmodule VoterCount do
+  def count(votes, counted_vote), do: Enum.count(votes, &(&1 == counted_vote))
+end
+
+VoterCount.count([:dogs, :dogs, :cats, :cats], :cats)
+```
+
+<!-- livebook:{"attrs":{"assertions":"assert VoterCount.count([], :test), \"Implement the `count` function.\"\n\nassert VoterCount.count([:dogs, :dogs, :dogs, :cats], :dogs) == 3,\n        \"failed on ([:dogs, :dogs, :dogs, :cats], :dogs)\"\n\nassert VoterCount.count([:dogs, :dogs, :dogs, :cats], :cats) == 1,\n        \"Failed on ([:dogs, :dogs, :dogs, :cats], :cats)\"\n\nassert VoterCount.count([:apples, :oranges, :apples, :cats], :birds) == 0,\n        \"Failed on ([:apples, :oranges, :apples, :cats], :birds)\"\n\nlist = Enum.map(1..10, fn _ -> Enum.random([:cat, :dog, :bird, :apple, :orange]) end)\nchoice = Enum.random([:cat, :dog, :bird, :apple, :orange])\nassert VoterCount.count(list, choice) == Enum.count(list, fn each -> each == choice end)","attempts":5,"code":"defmodule VoterCount do\n  def count(list, atom) do\n    for list <- [vote1, vote2, vote3, vote4] do\n      cond do\n        vote1 == atom -> 1\n        vote2 == atom -> 1\n        vote3 == atom -> 1\n        vote4 == atom -> 1\n        vote1 == atom && vote2 == atom -> 2\n        vote1 == atom && vote3 == atom -> 2\n        vote1 == atom && vote4 == atom -> 2\n        vote2 == atom && vote3 == atom -> 2\n        vote2 == atom && vote4 == atom -> 2\n        vote3 == atom && vote4 == atom -> 2\n        vote1 == atom && vote2 == atom && vote3 == atom -> 3\n        vote1 == atom && vote3 == atom && vote4 == atom -> 3\n        vote2 == atom && vote3 == atom && vote4 == atom -> 3\n        vote1 == atom && vote2 == atom && vote3 == atom && vote4 == atom -> 4\r      end\n    end\n  end\n\nend","solution":"defmodule VoterCount do\n  def count(votes, counted_vote), do: Enum.count(votes, &(&1 == counted_vote))\nend","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -50,24 +58,86 @@ ExUnit.start(auto_run: false)
 defmodule Assertion do
   use ExUnit.Case
 
-  test "" do
-    defmodule VoterCount do
+  test "Exercise" do
+    try do
+      Process.flag(:trap_exit, true)
+      defmodule VoterCount do
+  def count(list, atom) do
+    for list <- [vote1, vote2, vote3, vote4] do
+      cond do
+        vote1 == atom -> 1
+        vote2 == atom -> 1
+        vote3 == atom -> 1
+        vote4 == atom -> 1
+        vote1 == atom && vote2 == atom -> 2
+        vote1 == atom && vote3 == atom -> 2
+        vote1 == atom && vote4 == atom -> 2
+        vote2 == atom && vote3 == atom -> 2
+        vote2 == atom && vote4 == atom -> 2
+        vote3 == atom && vote4 == atom -> 2
+        vote1 == atom && vote2 == atom && vote3 == atom -> 3
+        vote1 == atom && vote3 == atom && vote4 == atom -> 3
+        vote2 == atom && vote3 == atom && vote4 == atom -> 3
+        vote1 == atom && vote2 == atom && vote3 == atom && vote4 == atom -> 4      end
     end
+  end
 
-    assert VoterCount.count([], :test), "Implement the `count` function."
+end
+      assert VoterCount.count([], :test), "Implement the `count` function."
 
-    assert VoterCount.count([:dogs, :dogs, :dogs, :cats], :dogs) == 3,
-           "failed on ([:dogs, :dogs, :dogs, :cats], :dogs)"
+assert VoterCount.count([:dogs, :dogs, :dogs, :cats], :dogs) == 3,
+        "failed on ([:dogs, :dogs, :dogs, :cats], :dogs)"
 
-    assert VoterCount.count([:dogs, :dogs, :dogs, :cats], :cats) == 1,
-           "Failed on ([:dogs, :dogs, :dogs, :cats], :cats)"
+assert VoterCount.count([:dogs, :dogs, :dogs, :cats], :cats) == 1,
+        "Failed on ([:dogs, :dogs, :dogs, :cats], :cats)"
 
-    assert VoterCount.count([:apples, :oranges, :apples, :cats], :birds) == 0,
-           "Failed on ([:apples, :oranges, :apples, :cats], :birds)"
+assert VoterCount.count([:apples, :oranges, :apples, :cats], :birds) == 0,
+        "Failed on ([:apples, :oranges, :apples, :cats], :birds)"
 
-    list = Enum.map(1..10, fn _ -> Enum.random([:cat, :dog, :bird, :apple, :orange]) end)
-    choice = Enum.random([:cat, :dog, :bird, :apple, :orange])
-    assert VoterCount.count(list, choice) == Enum.count(list, fn each -> each == choice end)
+list = Enum.map(1..10, fn _ -> Enum.random([:cat, :dog, :bird, :apple, :orange]) end)
+choice = Enum.random([:cat, :dog, :bird, :apple, :orange])
+assert VoterCount.count(list, choice) == Enum.count(list, fn each -> each == choice end)
+    catch
+      error ->
+        flunk("""
+          Your solution threw the following error:
+
+          #{inspect(error)}
+        """)
+
+      :exit, {error, {GenServer, message_type, [_pid, message, _timeout]}} ->
+          flunk("""
+            GenServer crashed with the following error:
+
+            #{inspect(error)}
+
+            When it recieved: #{inspect(message)} #{message_type}
+
+            Likely you need to define the corresponding handler for #{inspect(message)}.
+
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
+
+              def handle_call(:message, _from, state) do
+                ...
+              end
+
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
+
+              GenServer.call(pid, :message)
+        """)
+      :exit, error ->
+        flunk("""
+          Unhandled exit with the following error:
+
+          #{inspect(error)}
+        """)
+    after
+      # all warnings and errors are printed to the previous Kino Frame
+      # to avoid cluttering the test results display.
+      Process.sleep(10)
+      Kino.render(Kino.Markdown.new("### Test Results 
+<hr/>"))
+    end
   end
 end
 
@@ -75,8 +145,30 @@ ExUnit.run()
 
 # Make variables and modules defined in the test available.
 # Also allows for exploration using the output of the cell.
+# Unfortunately, this results in duplication of warnings.
 defmodule VoterCount do
+  def count(list, atom) do
+    for list <- [vote1, vote2, vote3, vote4] do
+      cond do
+        vote1 == atom -> 1
+        vote2 == atom -> 1
+        vote3 == atom -> 1
+        vote4 == atom -> 1
+        vote1 == atom && vote2 == atom -> 2
+        vote1 == atom && vote3 == atom -> 2
+        vote1 == atom && vote4 == atom -> 2
+        vote2 == atom && vote3 == atom -> 2
+        vote2 == atom && vote4 == atom -> 2
+        vote3 == atom && vote4 == atom -> 2
+        vote1 == atom && vote2 == atom && vote3 == atom -> 3
+        vote1 == atom && vote3 == atom && vote4 == atom -> 3
+        vote2 == atom && vote3 == atom && vote4 == atom -> 3
+        vote1 == atom && vote2 == atom && vote3 == atom && vote4 == atom -> 4      end
+    end
+  end
+
 end
+
 ```
 
 ## Commit Your Progress

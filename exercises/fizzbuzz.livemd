@@ -34,7 +34,51 @@ FizzBuzz.run(1..15)
 [1, 2, "fizz", 4, "buzz", "fizz", 7, 8, "fizz", "buzz", 11, "fizz", 13, 14, "fizzbuzz"]
 ```
 
-<!-- livebook:{"attrs":{"assertions":"defmodule Solutions.FizzBuzz do\n  def run(range) do\n    Enum.map(range, fn n ->\n      cond do\n        rem(n, 15) == 0 -> \"fizzbuzz\"\n        rem(n, 3) == 0 -> \"fizz\"\n        rem(n, 5) == 0 -> \"buzz\"\n        true -> n\n      end\n    end)\n  end\nend\n\nassert FizzBuzz.run(1..15) == [\n          1,\n          2,\n          \"fizz\",\n          4,\n          \"buzz\",\n          \"fizz\",\n          7,\n          8,\n          \"fizz\",\n          \"buzz\",\n          11,\n          \"fizz\",\n          13,\n          14,\n          \"fizzbuzz\"\n        ]\n\nassert FizzBuzz.run(1..100) == Solutions.FizzBuzz.run(1..100)","code":"defmodule FizzBuzz do\r\n  def run(range) do\r\n  end\r\nend","solution":"defmodule FizzBuzz do\n  def run(range) do\n    Enum.map(range, fn n ->\n      cond do\n        rem(n, 15) == 0 -> \"fizzbuzz\"\n        rem(n, 3) == 0 -> \"fizz\"\n        rem(n, 5) == 0 -> \"buzz\"\n        true -> n\n      end\n    end)\n  end\nend"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+```elixir
+defmodule FizzBuzz do
+  def run(range) do
+    mapped =
+      for z <- range do
+        cond do
+          rem(z, 3) == 0 && rem(z, 5) == 0 -> "fizzbuzz"
+          rem(z, 3) == 0 -> "fizz"
+          rem(z, 5) == 0 -> "buzz"
+          :otherwise -> z
+        end
+      end
+
+    # for a <- range, rem(a, 3) == 0 do "fizz"  end
+    # for b <- range, rem(b, 5) == 0 do "buzz" end
+    # for c <- range, rem(c, 3) == 0, rem(c, 5) == 0 do "fizzbuzz" end
+
+    Enum.to_list(mapped)
+  end
+end
+
+FizzBuzz.run(1..15)
+```
+
+```elixir
+defmodule MappingFizzBuzz do
+  def run(range) do
+    range
+    |> Enum.map(fn i -> {i, rem(i, 3) == 0, rem(i, 5) == 0} end)
+    |> Enum.map(fn
+      {_, true, true} -> "fizzbuzz"
+      {_, true, _} -> "fizz"
+      {_, _, true} -> "buzz"
+      {i, _, _} -> i
+    end)
+    |> Enum.to_list()
+  end
+
+  # 1 => {1, rem3?, rem5?}
+end
+
+MappingFizzBuzz.run(1..15)
+```
+
+<!-- livebook:{"attrs":{"assertions":"defmodule Solutions.FizzBuzz do\n  def run(range) do\n    Enum.map(range, fn n ->\n      cond do\n        rem(n, 15) == 0 -> \"fizzbuzz\"\n        rem(n, 3) == 0 -> \"fizz\"\n        rem(n, 5) == 0 -> \"buzz\"\n        true -> n\n      end\n    end)\n  end\nend\n\nassert FizzBuzz.run(1..15) == [\n          1,\n          2,\n          \"fizz\",\n          4,\n          \"buzz\",\n          \"fizz\",\n          7,\n          8,\n          \"fizz\",\n          \"buzz\",\n          11,\n          \"fizz\",\n          13,\n          14,\n          \"fizzbuzz\"\n        ]\n\nassert FizzBuzz.run(1..100) == Solutions.FizzBuzz.run(1..100)","attempts":1,"code":"defmodule FizzBuzz do\r\n  def run(range) d\n    for a <- range, rem(range, 3) == 0 do \"fizz\" end\n    for b <- range, rem(range, 5) == 0 do \"buzz\" end\n    for c <- range, rem(range, 3) == 0, rem(range, 5) == 0 do \"fizzbuzz\"o\r\n  end\r\nend","solution":"defmodule FizzBuzz do\n  def run(range) do\n    Enum.map(range, fn n ->\n      cond do\n        rem(n, 15) == 0 -> \"fizzbuzz\"\n        rem(n, 3) == 0 -> \"fizz\"\n        rem(n, 5) == 0 -> \"buzz\"\n        true -> n\n      end\n    end)\n  end\nend","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -42,44 +86,89 @@ ExUnit.start(auto_run: false)
 defmodule Assertion do
   use ExUnit.Case
 
-  test "" do
-    defmodule FizzBuzz do
-      def run(range) do
+  test "Exercise" do
+    try do
+      Process.flag(:trap_exit, true)
+      defmodule FizzBuzz do
+  def run(range) d
+    for a <- range, rem(range, 3) == 0 do "fizz" end
+    for b <- range, rem(range, 5) == 0 do "buzz" end
+    for c <- range, rem(range, 3) == 0, rem(range, 5) == 0 do "fizzbuzz"o
+  end
+end
+      defmodule Solutions.FizzBuzz do
+  def run(range) do
+    Enum.map(range, fn n ->
+      cond do
+        rem(n, 15) == 0 -> "fizzbuzz"
+        rem(n, 3) == 0 -> "fizz"
+        rem(n, 5) == 0 -> "buzz"
+        true -> n
       end
+    end)
+  end
+end
+
+assert FizzBuzz.run(1..15) == [
+          1,
+          2,
+          "fizz",
+          4,
+          "buzz",
+          "fizz",
+          7,
+          8,
+          "fizz",
+          "buzz",
+          11,
+          "fizz",
+          13,
+          14,
+          "fizzbuzz"
+        ]
+
+assert FizzBuzz.run(1..100) == Solutions.FizzBuzz.run(1..100)
+    catch
+      error ->
+        flunk("""
+          Your solution threw the following error:
+
+          #{inspect(error)}
+        """)
+
+      :exit, {error, {GenServer, message_type, [_pid, message, _timeout]}} ->
+          flunk("""
+            GenServer crashed with the following error:
+
+            #{inspect(error)}
+
+            When it recieved: #{inspect(message)} #{message_type}
+
+            Likely you need to define the corresponding handler for #{inspect(message)}.
+
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
+
+              def handle_call(:message, _from, state) do
+                ...
+              end
+
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
+
+              GenServer.call(pid, :message)
+        """)
+      :exit, error ->
+        flunk("""
+          Unhandled exit with the following error:
+
+          #{inspect(error)}
+        """)
+    after
+      # all warnings and errors are printed to the previous Kino Frame
+      # to avoid cluttering the test results display.
+      Process.sleep(10)
+      Kino.render(Kino.Markdown.new("### Test Results 
+<hr/>"))
     end
-
-    defmodule Solutions.FizzBuzz do
-      def run(range) do
-        Enum.map(range, fn n ->
-          cond do
-            rem(n, 15) == 0 -> "fizzbuzz"
-            rem(n, 3) == 0 -> "fizz"
-            rem(n, 5) == 0 -> "buzz"
-            true -> n
-          end
-        end)
-      end
-    end
-
-    assert FizzBuzz.run(1..15) == [
-             1,
-             2,
-             "fizz",
-             4,
-             "buzz",
-             "fizz",
-             7,
-             8,
-             "fizz",
-             "buzz",
-             11,
-             "fizz",
-             13,
-             14,
-             "fizzbuzz"
-           ]
-
-    assert FizzBuzz.run(1..100) == Solutions.FizzBuzz.run(1..100)
   end
 end
 
@@ -87,10 +176,15 @@ ExUnit.run()
 
 # Make variables and modules defined in the test available.
 # Also allows for exploration using the output of the cell.
+# Unfortunately, this results in duplication of warnings.
 defmodule FizzBuzz do
-  def run(range) do
+  def run(range) d
+    for a <- range, rem(range, 3) == 0 do "fizz" end
+    for b <- range, rem(range, 5) == 0 do "buzz" end
+    for c <- range, rem(range, 3) == 0, rem(range, 5) == 0 do "fizzbuzz"o
   end
 end
+
 ```
 
 ## Commit Your Progress
