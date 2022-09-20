@@ -89,7 +89,7 @@ end
 We can also use pattern matching in the generator to ignore non-matching values.
 
 ```elixir
-for {:keep, value} <- [keep: 1, keep: 2, filter: 1, filter: 3] do
+for {:filter, value} <- [keep: 1, keep: 2, filter: 1, filter: 3] do
   value
 end
 ```
@@ -191,7 +191,15 @@ Remember that ranges can have steps! e.g. <code>1..10//3</code>
 </details>
 
 ```elixir
+for a <- 2..100//2 do
+  a
+end
+```
 
+```elixir
+for a <- 2..100, rem(a, 2) == 0 do
+  a
+end
 ```
 
 ## Filters
@@ -237,7 +245,7 @@ must also go after any generator whose variable they rely on. For example, `b` h
 defined here.
 
 ```elixir
-for a <- 1..45, rem(a, 5) === 0, rem(b, 5) === 0, b <- 1..5 do
+for a <- 1..50, rem(a, 5) === 0, b <- 1..5, rem(b, 5) === 0 do
   [a, b]
 end
 ```
@@ -266,7 +274,9 @@ flowchart
 ```
 
 ```elixir
-
+for a <- 1..6, b <- 6..1, a + b == 7 do
+  {a, b}
+end
 ```
 
 ## Collectables
@@ -329,7 +339,15 @@ You can use <code>:binary.first/1</code> to convert a variable bound to a string
 </details>
 
 ```elixir
+for n <- ["a", "b", "c", "d"], into: %{} do
+  {n, :binary.first(n)}
+end
+```
 
+```elixir
+for n <- ["abcd"], into: %{} do
+  {:binary.first(n)}
+end
 ```
 
 ## Why Use A Comprehension?
@@ -375,7 +393,9 @@ Enum.map(1...5, fn each -> each * 2 end)
 ```
 
 ```elixir
-
+for num <- 1..5 do
+  num * 2
+end
 ```
 
 In the Elixir cell below, convert the following `Enum.reduce` into a comprehension.
@@ -388,7 +408,7 @@ Enum.reduce(["a", "b", "c"], fn each, acc -> acc <> each end)
 ```
 
 ```elixir
-
+for list <- ["a", "b", "c"], do: "#{list}", into: ""
 ```
 
 In the Elixir cell below, convert the following nested `Enum.map` into a comprehension with three generators.
@@ -401,7 +421,11 @@ Enum.map(1..3, fn a -> Enum.map(1..3, fn b -> {a, b} end) end)
 ```
 
 ```elixir
-
+for a <- 1..3 do
+  for b <- 1..3 do
+    {a, b}
+  end
+end
 ```
 
 ## Commit Your Progress
