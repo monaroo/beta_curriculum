@@ -64,6 +64,10 @@ The first `is_a_atom` value is filled in to demonstrate the goal.
 Replace `nil` with your answers.
 
 ```elixir
+is_atom()
+```
+
+```elixir
 atom = :example
 map = %{}
 string = ""
@@ -73,7 +77,7 @@ boolean = true
 list = []
 tuple = {}
 
-is_a_atom = is_atom(:example)
+is_an_atom = is_atom(:example)
 is_a_map = is_map(%{})
 is_a_string = is_binary("")
 is_a_integer = is_integer(1)

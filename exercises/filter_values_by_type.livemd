@@ -40,6 +40,7 @@ Implement the `Filter` module below.
 ```elixir
 defmodule Filter do
   def integers(list) do
+    if is_integer(list) = true do Enum.filter(list, fn )
   end
 
   def floats(list) do

@@ -30,7 +30,7 @@ defmodule Item do
 end
 ```
 
-<!-- livebook:{"attrs":{"assertions":"assert Keyword.get(Item.__info__(:functions), :__struct__),\n        \"Ensure you use `defstruct`.\"\n\nassert match?(%{type: nil, effect: nil, level: nil, size: nil, style: nil}, struct(Item)),\n        \"Ensure you use `defstruct` with :type, :effect, :level, :size, and :style.\"","attempts":6,"code":"d","solution":"defmodule Item do\n  defstruct [:type, :effect, :level, :size, :style]\nend","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"assertions":"assert Keyword.get(Item.__info__(:functions), :__struct__),\n        \"Ensure you use `defstruct`.\"\n\nassert match?(%{type: nil, effect: nil, level: nil, size: nil, style: nil}, struct(Item)),\n        \"Ensure you use `defstruct` with :type, :effect, :level, :size, and :style.\"","attempts":1,"code":"d","solution":"defmodule Item do\n  defstruct [:type, :effect, :level, :size, :style]\nend","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)

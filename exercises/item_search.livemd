@@ -64,9 +64,70 @@ Enter your answer in the Elixir cell below.
 ```elixir
 defmodule Search do
   def all_items(items, filters) do
+    if Keyword.get(filters, :inclusive) do
+      Enum.filter(items, fn item ->
+        Enum.any?(filters, fn {attribute, value} ->
+          Map.get(item, attribute) == value
+        end)
+      end)
+    else
+      Enum.filter(items, fn item ->
+        Enum.all?(filters, fn {attribute, value} ->
+          Map.get(item, attribute) == value
+        end)
+      end)
+    end
   end
 end
 
+# def any_items(items, filters) do
+
+# Enum.filter(items, fn item ->
+#  Enum.any?(filters, fn {attribute, value} -> 
+#   Map.get(item, attribute) == value
+# end)
+# end)
+
+items = [
+  %{type: "sword", effect: "healing", level: 1, size: 1, style: "holy"},
+  %{type: "mace", effect: "protection", level: 2, size: 3, style: "dark"}
+]
+
+Search.all_items(items, type: "mace")
+```
+
+```elixir
+defmodule Search do
+  def all_items(items, filters) do
+    if Keyword.get(filters, :inclusive) 
+      do
+     Enum.filter(items, fn item ->
+      Enum.any?(filters, fn {attribute, value} -> 
+        Map.get(item, attribute) == value
+      else
+    Enum.filter(items, fn item ->
+      Enum.all?(filters, fn {attribute, value} -> 
+        Map.get(item, attribute) == value
+      end)
+    end)
+  end
+
+   def any_items(items, filters) do
+    
+    Enum.filter(items, fn item ->
+      Enum.any?(filters, fn {attribute, value} -> 
+        Map.get(item, attribute) == value
+      end)
+    end)
+  end
+
+
+items = [
+  %{type: "sword", effect: "healing", level: 1, size: 1, style: "holy"},
+  %{type: "mace", effect: "protection", level: 2, size: 3, style: "dark"}
+]
+
+Search.all_items(items, type: "mace")
 Utils.feedback(:item_generator_search, Search)
 ```
 
