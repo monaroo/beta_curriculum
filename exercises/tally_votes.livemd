@@ -35,8 +35,25 @@ VoterTally.tally([:pink, :indigo, :purple, :pink])
 ```elixir
 defmodule VoterTally do
   def tally(votes) do
+    Enum.reduce(votes, %{}, fn vote, acc ->
+      prev_count = Map.get(acc, vote, 0)
+      Map.put(acc, vote, prev_count + 1)
+    end)
   end
 end
+
+VoterTally.tally([:pink, :indigo, :purple, :pink])
+```
+
+```elixir
+defmodule VoterTally do
+  def tally(votes) do
+    Enum.count(votes, &(&1 == hd(votes)))
+    # Enum.count(votes, &(&1 == counted_vote))
+  end
+end
+
+VoterTally.tally([:pink, :indigo, :purple, :pink])
 
 Utils.feedback(:voter_tally, VoterTally)
 ```
@@ -64,11 +81,25 @@ VoterPower.tally([:dogs, :dogs, :cats, dogs: 2])
 ```
 
 ```elixir
+
+```
+
+```elixir
 defmodule VoterPower do
   def tally(votes) do
+    Enum.reduce(votes, %{}, fn
+      {vote, count}, acc ->
+        prev_count = Map.get(acc, vote, 0)
+        Map.put(acc, vote, prev_count + count)
+
+      vote, acc ->
+        prev_count = Map.get(acc, vote, 0)
+        Map.put(acc, vote, prev_count + 1)
+    end)
   end
 end
 
+VoterPower.tally([:dogs, :dogs, :cats, dogs: 2]) |> IO.inspect()
 Utils.feedback(:voter_power, VoterPower)
 ```
 
