@@ -38,34 +38,73 @@ Filter.maps(["hello", 4.0, %{key: "value"}, %{}])
 Implement the `Filter` module below.
 
 ```elixir
+
+```
+
+```elixir
 defmodule Filter do
   def integers(list) do
-    if is_integer(list) = true do Enum.filter(list, fn )
+    Enum.filter(list, &is_integer/1)
   end
 
   def floats(list) do
+    Enum.filter(list, &is_float/1)
   end
 
   # numbers include floats and integers
-  def numbers do
+  def numbers(list) do
+    Enum.filter(list, fn number -> is_integer(number) || is_float(number) end)
   end
 
   def atoms(list) do
+    Enum.filter(list, &is_atom/1)
   end
 
   # lists will include keyword lists.
   def lists(list) do
+    Enum.filter(list, &is_list/1)
   end
 
   def maps(list) do
+    Enum.filter(list, &is_map/1)
   end
 
   # keyword lists will include empty lists.
   def keyword_lists(list) do
+    list
+    |> lists()
+    |> Enum.filter(fn l ->
+      Enum.all?(l, fn
+        {key, _} -> is_atom(key)
+        _ -> false
+      end)
+    end)
   end
 end
 
+# is_tuple(is_atom(coll) && is_integer(coll)
+# &&  is_tuple(is_atom(coll) && is_integer(coll) || coll == []
 Utils.feedback(:filter_by_type, Filter)
+```
+
+```elixir
+defmodule MyEnum do
+  def filter(collection, predicate) do
+    do_filter(collection, [], predicate)
+  end
+
+  defp do_filter([], output, _predicate), do: Enum.reverse(output)
+
+  defp do_filter([h | t] = input, output, predicate) do
+    if predicate.(h) do
+      do_filter(t, [h | output], predicate)
+    else
+      do_filter(t, output, predicate)
+    end
+  end
+end
+
+MyEnum.filter([1, 2, 3, 4, 5], fn x -> rem(x, 2) == 0 end)
 ```
 
 ## Commit Your Progress

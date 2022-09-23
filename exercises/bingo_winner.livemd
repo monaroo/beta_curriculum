@@ -91,7 +91,11 @@ Enter your answer below.
 
 ```elixir
 defmodule BingoWinner do
+    board = list_a, list_b, list_c
   def is_winner?(board) do
+  end
+  defp across_a(board) do
+    if Enum.at(list_a, 0) == Enum.at(list_a)
   end
 end
 
