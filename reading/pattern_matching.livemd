@@ -512,6 +512,15 @@ Points.tally([10, 20, 30])
 ```elixir
 defmodule Points do
   def tally(scores) do
+    with [el1, el2] <- scores,
+         true <- is_integer(el1),
+         true <- is_integer(el2),
+         true <- el1 >= 10,
+         true <- el2 >= 10 do
+      el1 + el2
+    else
+      _ -> {:error, :invalid}
+    end
   end
 end
 
@@ -577,7 +586,7 @@ Use the pin operator to make the following code crash with a [MatchError](https:
 expected = {"hello"}
 actual = {"hello", "hi"}
 
-expected = actual
+^expected = actual
 ```
 
 ## Commit Your Progress
