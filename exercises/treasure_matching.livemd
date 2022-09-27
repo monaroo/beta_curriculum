@@ -21,6 +21,12 @@ string from the data provided and bind it to a `jewel` variable. The first exerc
 
 ```elixir
 [_, _, _, jewel] = [1, 2, 3, "jewel"]
+jewel
+```
+
+```elixir
+[_, _, _, jewel] = [1, 2, 3, "jewel"]
+jewel
 
 Utils.feedback(:jewel, jewel)
 ```
@@ -28,115 +34,189 @@ Utils.feedback(:jewel, jewel)
 Replace `nil` with your answer.
 
 ```elixir
-nil = [1, 2, 3, "jewel"]
+[_, _, _, jewel] = [1, 2, 3, "jewel"]
+jewel
+```
+
+```elixir
+[_, _, _, jewel] = [1, 2, 3, "jewel"]
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = %{key1: "value", key2: "jewel"}
+key2 = %{key1: "value", key2: "jewel"}
+jewel
+```
+
+```elixir
+key2 = %{key1: "value", key2: "jewel"}
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = %{1 => "jewel"}
+one = %{1 => "jewel"}
+jewel
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = %{%{key: [1, 2, 3, 4, 5, {}]} => "jewel"}
+key = %{%{key: [1, 2, 3, 4, 5, {}]} => "jewel"}
+jewel
+```
+
+```elixir
+key = %{%{key: [1, 2, 3, 4, 5, {}]} => "jewel"}
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = %{north: %{south: %{west: %{east: "jewel"}}}}
+east = %{north: %{south: %{west: %{east: "jewel"}}}}
+jewel
+```
+
+```elixir
+east = %{north: %{south: %{west: %{east: "jewel"}}}}
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = %{"jewel" => 1}
+one = %{"jewel" => 1}
+jewel
+```
+
+```elixir
+one = %{"jewel" => 1}
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = [2, "jewel"]
+[_, jewel] = [2, "jewel"]
+jewel
+```
+
+```elixir
+two = [2, "jewel"]
+jewel
+```
+
+```elixir
+two = [2, "jewel"]
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = ["jewel", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+one = ["jewel", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+jewel
+```
+
+```elixir
+one = ["jewel", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = [1, "jewel", 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+one = [1, "jewel", 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = [1, 2, "jewel", 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+one = [1, "jewel", 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+jewel
+```
+
+```elixir
+three = [1, 2, "jewel", 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+jewel
+Utils.feedback(:jewel, jewel)
+```
+
+```elixir
+one = [[], [1, [2, "jewel"]]]
+jewel
+```
+
+```elixir
+one = [[], [1, [2, "jewel"]]]
+jewel
+Utils.feedback(:jewel, jewel)
+```
+
+```elixir
+"here is the " <> jewel = "here is the jewel"
+jewel
+```
+
+```elixir
+"here is the " <> jewel = "here is the jewel"
+jewel
+Utils.feedback(:jewel, jewel)
+```
+
+```elixir
+{jewel} = {"jewel"}
+jewel
+```
+
+```elixir
+{jewel} = {"jewel"}
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = [[], [1, [2, "jewel"]]]
+{jewel, _} = {"jewel", 1}
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = "here is the jewel"
+{_, _, jewel} = {1, 2, "jewel"}
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = {"jewel"}
+[jewel | _] = ["jewel"] ++ Enum.to_list(1..100)
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = {"jewel", 1}
+[key: jewel] = [key: "jewel"]
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = {1, 2, "jewel"}
+Enum.map(1..4, fn each -> (each == 2 && "jewel") || each end)
+```
+
+```elixir
+[1, jewel, 3, 4] = Enum.map(1..4, fn each -> (each == 2 && "jewel") || each end)
 
 Utils.feedback(:jewel, jewel)
 ```
 
 ```elixir
-nil = ["jewel"] ++ Enum.to_list(1..100)
-
-Utils.feedback(:jewel, jewel)
+Enum.map(1..4, &((&1 > 3 && "jewel") || &1))
 ```
 
 ```elixir
-nil = [key: "jewel"]
-
-Utils.feedback(:jewel, jewel)
+[_, _, _, jewel] = Enum.map(1..4, &((&1 > 3 && "jewel") || &1))
+jewel
 ```
 
 ```elixir
-nil = Enum.map(1..4, fn each -> (each == 2 && "jewel") || each end)
-
-Utils.feedback(:jewel, jewel)
-```
-
-```elixir
-nil = Enum.map(1..4, &((&1 > 3 && "jewel") || &1))
+[_, _, _, jewel] = Enum.map(1..4, &((&1 > 3 && "jewel") || &1))
 
 Utils.feedback(:jewel, jewel)
 ```
