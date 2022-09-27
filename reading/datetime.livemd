@@ -125,7 +125,7 @@ Map.from_struct(datetime)
 And like any struct, you can access all of these properties directly.
 
 ```elixir
-datetime.year
+datetime.year + 20
 ```
 
 ## Display the Current Date
@@ -185,7 +185,7 @@ Use [DateTime.new!/4](https://hexdocs.pm/elixir/DateTime.html#new!/4) to create 
 Replace `nil` with your answer.
 
 ```elixir
-date = nil
+date = DateTime.new!(~D[1938-04-18], ~T[12:00:00])
 
 Utils.feedback(:datetime_new, date)
 ```
@@ -194,7 +194,11 @@ Create a [DateTime](https://hexdocs.pm/elixir/DateTime.html) for today at the cu
 Replace `nil` with your answer.
 
 ```elixir
-today = nil
+today = DateTime.utc_now()
+```
+
+```elixir
+today = DateTime.utc_now()
 
 Utils.feedback(:datetime_today, today)
 ```
@@ -202,7 +206,8 @@ Utils.feedback(:datetime_today, today)
 Create a [DateTime](https://hexdocs.pm/elixir/DateTime.html) for tomorrow at the current time. You may wish to use [DateTime.add/4](https://hexdocs.pm/elixir/DateTime.html#add/4).
 
 ```elixir
-tomorrow = nil
+now = DateTime.utc_now()
+tomorrow = DateTime.add(now, 60 * 60 * 24, :second)
 
 Utils.feedback(:datetime_tomorrow, tomorrow)
 ```
@@ -214,7 +219,7 @@ Replace `nil` with your answer.
 ```elixir
 date = DateTime.new!(~D[1938-04-18], ~T[12:00:00])
 
-comparison = nil
+comparison = DateTime.compare(now, date)
 
 Utils.feedback(:datetime_compare, comparison)
 ```
@@ -228,7 +233,7 @@ Replace `nil` with your answer.
 date1 = DateTime.new!(~D[2000-01-01], ~T[12:00:00])
 date2 = DateTime.new!(~D[2010-02-02], ~T[12:00:00])
 
-difference = nil
+difference = DateTime.diff(date2, date1)
 
 Utils.feedback(:datetime_diff, difference)
 ```
@@ -265,7 +270,7 @@ Use `Timex.now/1` to create a datetime for your current timezone. Compare it wit
 to ensure it is correct.
 
 ```elixir
-
+Timex.now()
 ```
 
 ## Commit Your Progress

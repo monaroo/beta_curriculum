@@ -66,7 +66,58 @@ Enter your solution below.
 
 ```elixir
 defmodule NumberWordle do
-  def feedback(guess, answer) do
+  def feedback(answer, guess) do
+    # turn numbers into digits
+    a_digits = digit(answer)
+    g_digits = digit(guess)
+    myzip = zip(a_digits, g_digits)
+    map(myzip)
+  end
+
+  def digit(number) do
+    Integer.digits(number)
+  end
+
+  def zip(a, b) do
+    Enum.zip(a, b)
+  end
+
+  def map(pairs) do
+    answerdigits = Enum.map(pairs, fn {a, _b} -> a end)
+
+    Enum.map(pairs, fn {a, b} ->
+      if a == b do
+        :green
+      else
+        if b in answerdigits do
+          :yellow
+        else
+          :gray
+        end
+      end
+    end)
+  end
+end
+
+NumberWordle.feedback(1234, 1345)
+```
+
+```elixir
+defmodule NumberWordle do
+  def feedback(answer, guess) do
+    # turn numbers into digits
+    a_digits = digit(answer)
+    g_digits = digit(guess)
+    # Enum.zip digits
+    # Enum.map pair into color code
+  end
+
+  def digit(number) do
+    Integer.digits(number)
+  end
+
+  def zip do
+    Enum.zip(a, b)
   end
 end
 

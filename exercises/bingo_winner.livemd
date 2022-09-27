@@ -91,15 +91,133 @@ Enter your answer below.
 
 ```elixir
 defmodule BingoWinner do
-    board = list_a, list_b, list_c
-  def is_winner?(board) do
-  end
   defp across_a(board) do
-    if Enum.at(list_a, 0) == Enum.at(list_a)
+    if Enum.at(board, 0) == Enum.at(board, 1) == Enum.at(board, 2) do
+      "winner!!"
+    else
+      false
+    end
+  end
+
+  defp across_b(board) do
+    if Enum.at(board, 0) == Enum.at(board, 1) == Enum.at(board, 2) do
+      "winner!!"
+    else
+      false
+    end
+  end
+
+  defp across_c(board) do
+    if Enum.at(board, 0) == Enum.at(board, 1) == Enum.at(board, 2) do
+      "winner!!"
+    else
+      false
+    end
+  end
+
+  defp down0(board) do
+    if Enum.at(board, 0) == Enum.at(board, 0) == Enum.at(board, 0) do
+      "winner"
+    else
+      false
+    end
+  end
+
+  defp down1(board) do
+    if Enum.at(board, 1) == Enum.at(board, 1) == Enum.at(board, 1) do
+      "winner"
+    else
+      false
+    end
+  end
+
+  defp down2(board) do
+    if Enum.at(board, 2) == Enum.at(board, 2) == Enum.at(board, 2) do
+      "winner"
+    else
+      false
+    end
+  end
+
+  defp diag1(board) do
+    if Enum.at(board, 0) == Enum.at(board, 1) == Enum.at(board, 2) do
+      "winner"
+    else
+      false
+    end
+  end
+
+  defp diag2(board) do
+    if Enum.at(board, 2) == Enum.at(board, 1) == Enum.at(board, 2) do
+      "winner"
+    else
+      false
+    end
+  end
+
+  def is_winner?(board) do
+    if is_list(board) do
+      across_a(board)
+      across_b(board)
+      across_c(board)
+      down0(board)
+      down1(board)
+      down2(board)
+      diag1(board)
+      diag2(board)
+    end
   end
 end
 
 Utils.feedback(:bingo_winner, BingoWinner)
+```
+
+```elixir
+defmodule BingoPlayer do
+  @doc "takes a board and return a list of rows in the board"
+  def rows(board), do: board
+
+  @doc "takes a board and return a list of cols in the board"
+  def cols(board) do
+    for col <- 0..2 do
+      board |> Enum.map(fn row -> Enum.at(row, col) end)
+    end
+  end
+
+  def diags(board) do
+    [
+      [
+        board |> Enum.at(0) |> Enum.at(0),
+        board |> Enum.at(1) |> Enum.at(1),
+        board |> Enum.at(2) |> Enum.at(2)
+      ],
+      [
+        board |> Enum.at(2) |> Enum.at(0),
+        board |> Enum.at(1) |> Enum.at(1),
+        board |> Enum.at(0) |> Enum.at(2)
+      ]
+    ]
+  end
+
+  def combos(board), do: rows(board) ++ cols(board) ++ diags(board)
+
+  def winner_combo?(["X", "X", "X"]), do: true
+  def winner_combo?(_), do: false
+
+  def winner?(board) do
+    board
+    |> combos()
+    |> Enum.any?(&winner_combo?/1)
+  end
+end
+
+board = [
+  [nil, nil, "X"],
+  [nil, "X", nil],
+  ["X", nil, nil]
+]
+
+BingoPlayer.winner?(board)
 ```
 
 ## Play Bingo
@@ -132,9 +250,52 @@ Enter your answer below.
 
 ```elixir
 defmodule Bingo do
+  def rows(board), do: board
+
+  @doc "takes a board and return a list of cols in the board"
+  def cols(board) do
+    for col <- 0..2 do
+      board |> Enum.map(fn row -> Enum.at(row, col) end)
+    end
+  end
+
+  def diags(board) do
+    [
+      [
+        board |> Enum.at(0) |> Enum.at(0),
+        board |> Enum.at(1) |> Enum.at(1),
+        board |> Enum.at(2) |> Enum.at(2)
+      ],
+      [
+        board |> Enum.at(2) |> Enum.at(0),
+        board |> Enum.at(1) |> Enum.at(1),
+        board |> Enum.at(0) |> Enum.at(2)
+      ]
+    ]
+  end
+
+  def combos(board), do: rows(board) ++ cols(board) ++ diags(board)
+
+  def winner_combo?(combo, called_numbers) do
+    Enum.all?(combo, fn number -> number in called_numbers end)
+  end
+
   def is_winner?(board, called_numbers) do
+    board
+    |> combos()
+    |> Enum.any?(fn combo -> winner_combo?(combo, called_numbers) end)
   end
 end
+
+board = [
+  [3, 2, 5],
+  [1, 6, 7],
+  [4, 8, 9]
+]
+
+called_numbers = [3, 1, 4]
+
+Bingo.is_winner?(board, called_numbers)
 
 Utils.feedback(:bingo, Bingo)
 ```

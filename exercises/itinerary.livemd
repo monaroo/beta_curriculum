@@ -51,7 +51,28 @@ true
 Enter your solution below.
 
 ```elixir
+start = DateTime.new!(~D[2022-04-24], ~T[12:00:00])
+finish = DateTime.new!(~D[2022-04-24], ~T[13:00:00])
+
 defmodule Itinerary do
+  def compare do
+    fn time1, time2 -> DateTime.compare(time1, time2) end
+  end
+
+  def has_time?(start, finish, activities) do
+    Itinerary.compare(start, finish)
+  end
+end
+
+DateTime.compare(start, finish)
+```
+
+```elixir
+defmodule Itinerary do
+  def compare do
+    DateTime.compare(start, finish)
+  end
+
   def has_time?(start, finish, activities) do
   end
 end
