@@ -36,7 +36,34 @@ RockPaperScissors.play(:rock, :rock)
 
 ```elixir
 defmodule RockPaperScissors do
-  def play(guess1, guess2) do
+  def play(guess1, guess2)
+      when guess1 == :rock or guess1 == :paper or (guess1 == :scissors and guess2 == :rock) or
+             guess2 == :paper or guess2 == :scissors do
+    if beats?(guess1, guess2) do
+      ":#{guess1} beats :#{guess2}!"
+    else
+      if draw?(guess1, guess2) do
+        "draw!"
+      else
+        ":#{guess2} beats :#{guess1}!"
+      end
+    end
+  end
+
+  def beats?(guess1, guess2) do
+    {guess1, guess2} in [
+      {:rock, :scissors},
+      {:paper, :rock},
+      {:scissors, :paper}
+    ]
+  end
+
+  def draw?(guess1, guess2) do
+    {guess1, guess2} in [
+      {:rock, :rock},
+      {:paper, :paper},
+      {:scissors, :scissors}
+    ]
   end
 end
 
