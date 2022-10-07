@@ -85,6 +85,10 @@ Enter your solution between the comments below. You may consider making `Charact
 
 ```elixir
 # Enter your solution below
+defmodule Archer do
+  defstruct []
+end
+
 defprotocol Character do
   def can_attack?(character, origin, target)
 end
@@ -104,6 +108,15 @@ defimpl Character, for: Barbarian do
     y_diff = init_y - y
 
     abs(x_diff) <= 2 && abs(y_diff) <= 2
+  end
+end
+
+defimpl Character, for: Archer do
+  def can_attack?(_character, {init_x, init_y}, {x, y}) do
+    x_diff = init_x - x
+    y_diff = init_y - y
+
+    abs(x_diff) == 3 && abs(y_diff) == 3
   end
 end
 
