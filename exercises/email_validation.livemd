@@ -52,8 +52,13 @@ true = Email.validate("!#$@*&().&&&")
 Enter your solution below
 
 ```elixir
+
+```
+
+```elixir
 defmodule Email do
   def validate(email) do
+    Regex.match?(~r/(\S+)\@(\S+)\.(\S+)/, email)
   end
 end
 

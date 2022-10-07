@@ -48,6 +48,7 @@ In the Elixir cell below, define a `Character` struct with `:health`, `:speed`, 
 
 ```elixir
 defmodule Character do
+  defstruct [:class, health: 100, speed: 20, equipment: []]
 end
 
 Utils.feedback(:rpg_character, Character)
@@ -59,6 +60,7 @@ Create a `HealingPotion` struct. It should have a `:level` defaulted to `1`.
 
 ```elixir
 defmodule HealingPotion do
+  defstruct level: 1
 end
 
 Utils.feedback(:rpg_healing_potion, HealingPotion)
@@ -68,6 +70,7 @@ Create an `Armor` struct. It should have a `:defense` defaulted to `10`.
 
 ```elixir
 defmodule Armor do
+  defstruct defense: 10
 end
 
 Utils.feedback(:rpg_armor, Armor)
@@ -92,9 +95,18 @@ Consumable.consume(item, character)
 
 ```elixir
 defprotocol Consumable do
+  # @spec consume(Consumable.t(), Character.t()) :: Character.t()
+  def consume(consumable, character)
 end
 
 defimpl Consumable, for: HealingPotion do
+  def consume(
+        %HealingPotion{level: _level} = potion,
+        %Character{health: current_health} = character
+      ) do
+    new_level = 10 * Map.get(potion, :level)
+    %{character | health: current_health + new_level}
+  end
 end
 
 Utils.feedback(:rpg_consumable, [Consumable, Character, HealingPotion])
@@ -135,9 +147,36 @@ Wearable.remove(item, character)
 
 ```elixir
 defprotocol Wearable do
+  def wear(item, character)
+  def remove(item, character)
 end
 
 defimpl Wearable, for: Armor do
+  # item = %Armor{defense: defense}
+  # character = %Character
+  def wear(
+        %Armor{defense: defense} = armor_struct,
+        %Character{health: health, speed: speed, equipment: equipment} = character
+      ) do
+    %{
+      character
+      | health: health + defense,
+        speed: speed - 5,
+        equipment: [armor_struct | equipment]
+    }
+  end
+
+  def remove(
+        %Armor{defense: defense} = armor_struct,
+        %Character{health: health, speed: speed, equipment: equipment} = character
+      ) do
+    %{
+      character
+      | health: health - defense,
+        speed: speed + 5,
+        equipment: Enum.reject(equipment, fn item -> item == armor_struct end)
+    }
+  end
 end
 
 Utils.feedback(:rpg_wearable, [Wearable, Character, Armor])

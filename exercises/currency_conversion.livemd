@@ -73,15 +73,50 @@ Enter your solution below.
 
 ```elixir
 defmodule Money do
-  defstruct []
+  defstruct [:amount, :currency]
 
   def new(amount, currency) do
+    money = %Money{amount: amount, currency: currency}
+  end
+
+  def cvalue(money) do
+    Map.get(money, :currency)
+  end
+
+  def avalue(money) do
+    Map.get(money, :amount)
   end
 
   def convert(money, currency) do
+    newval = currency
+    val = cvalue(money)
+    avalue = avalue(money)
+
+    cond do
+      val == :CAD && newval == :USD -> avalue * 1.29
+      val == :CAD && newval == :EUR -> round(avalue / 1.39)
+      val == :USD && newval == :CAD -> avalue / 1.29
+      val == :USD && newval == :EUR -> avalue * 1.07
+      val == :EUR && newval == :CAD -> avalue * 0.719
+      val == :EUR && newval == :USD -> avalue * 0.928
+    end
+
+    # %Money{}
   end
 
-  def add(money1, money2) do
+  defp math(money, currency) do
+    newval = currency
+    val = cvalue(money)
+    avalue = avalue(money)
+
+    cond do
+      val == :CAD && newval == :USD -> round(avalue / 1.29)
+      val == :CAD && newval == :EUR -> round(avalue / 1.39)
+      val == :USD && newval == :CAD -> avalue / 1.29
+      val == :USD && newval == :EUR -> avalue * 1.07
+      val == :EUR && newval == :CAD -> avalue * 0.719
+      val == :EUR && newval == :USD -> avalue * 0.928
+    end
   end
 
   def multiply(money1, money2) do

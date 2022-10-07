@@ -124,6 +124,88 @@ Enter your solution below between the comments. Ensure you create a `Math` modul
 
 ```elixir
 # Enter your answer below
+defprotocol Math do
+  def add(value1, value2)
+  def subtract(value1, value2)
+  def multiply(value1, value2)
+end
+
+# int float string list range
+defimpl Math, for: Integer do
+  def add(int1, int2) do
+    int1 + int2
+  end
+
+  def subtract(int1, int2) do
+    int1 - int2
+  end
+
+  def multiply(int1, int2) do
+    int1 * int2
+  end
+end
+
+defimpl Math, for: Float do
+  def add(fl1, fl2) do
+    fl1 + fl2
+  end
+
+  def subtract(fl1, fl2) do
+    fl1 - fl2
+  end
+
+  def multiply(fl1, fl2) do
+    fl1 * fl2
+  end
+end
+
+defimpl Math, for: BitString do
+  def add(st1, st2) do
+    st1 <> st2
+  end
+
+  def subtract(st1, st2) do
+    String.replace(st1, st2, "")
+  end
+
+  def multiply(st1, st2) do
+    split = String.split(st1, "", trim: true)
+
+    split
+    |> Enum.map(fn each -> each <> st2 end)
+    |> List.to_string()
+  end
+end
+
+defimpl Math, for: List do
+  def add(list1, list2) do
+    list1 ++ list2
+  end
+
+  def subtract(list1, list2) do
+    list1 -- list2
+  end
+
+  def multiply(list1, list2) do
+    list1
+    |> List.duplicate(list2)
+    |> List.flatten()
+  end
+end
+
+defimpl Math, for: Range do
+  def add(first1..last1, first2..last2) do
+    (first1 + first2)..(last1 + last2)
+  end
+
+  def subtract(first1..last1, first2..last2) do
+    (first1 - first2)..(last1 - last2)
+  end
+
+  def multiply(first1..last1, first2..last2) do
+    (first1 * first2)..(last1 * last2)
+  end
+end
 
 # Enter your answer above
 Utils.feedback(:math_module, Math)

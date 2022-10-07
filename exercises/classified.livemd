@@ -56,6 +56,11 @@ Enter your solution below.
 ```elixir
 defmodule Classified do
   def redact(string) do
+    string
+    |> String.replace(["Peter Parker", "Bruce Wayne", "Clark Kent"], "REDACTED")
+    |> String.replace(~r/\w+\@\w+\.\w+/, "REDACTED")
+    |> String.replace(~r/\d{3}-\d{3}-\d{4}/, "REDACTED")
+    |> String.replace(~r/\b\d{4}\b/, "REDACTED")
   end
 end
 

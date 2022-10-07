@@ -56,8 +56,109 @@ PhoneNumber.parse(text)
 Enter your answer below.
 
 ```elixir
+def condline(string) do
+  numbersonly = ~r/(\d{3})(\d{3})(\d{4})/
+  spaces = ~r/(\d{3})\s(\d{3})\s(\d{4})/
+  paren2dash = ~r/\((\d{3})\)(\-)(\d{3})(\-)(\d{4})/
+  parenspace = ~r/\((\d{3})\)\s(\d{3})\s(\d{4})/
+  paren1dash = ~r/\((\d{3})\)(\d{3})\s(\d{4})/
+
+  cond do
+    Regex.match?(numbersonly, string) ->
+      Regex.replace(numbersonly, string, fn _, a, b, c ->
+        a <> "-" <> b <> "-" <> c
+      end)
+
+    Regex.match?(spaces, string) ->
+      Regex.replace(spaces, string, fn _, a, c, e ->
+        a <> "-" <> c <> "-" <> e
+      end)
+
+    Regex.match?(paren2dash, string) ->
+      Regex.replace(paren2dash, string, fn _, b, d, e, f, g ->
+        b <> d <> e <> f <> g
+      end)
+
+    Regex.match?(parenspace, string) ->
+      Regex.replace(parenspace, string, fn _, b, e, g ->
+        b <> "-" <> e <> "-" <> g
+      end)
+
+    Regex.scan(paren1dash, string) ->
+      Regex.replace(paren1dash, string, fn _, b, d, f ->
+        b <> "-" <> d <> "-" <> f
+      end)
+  end
+end
+
+def each(list) do
+  Enum.each(list, condline(string))
+end
+
+def jam(list) do
+  Enum.join(list)
+end
+
+string
+|> PhoneNumber.split()
+|> PhoneNumber.each()
+|> PhoneNumber.jam()
+```
+
+```elixir
 defmodule PhoneNumber do
+  def split(string) do
+    String.split(string, "\n")
+  end
+
+  def condline(string) do
+    numbersonly = ~r/(\d{3})(\d{3})(\d{4})/
+    spaces = ~r/(\d{3})\s(\d{3})\s(\d{4})/
+    paren2dash = ~r/\((\d{3})\)(\-)(\d{3})(\-)(\d{4})/
+    parenspace = ~r/\((\d{3})\)\s(\d{3})\s(\d{4})/
+    paren1dash = ~r/\((\d{3})\)(\d{3})\-(\d{4})/
+
+    cond do
+      Regex.match?(numbersonly, string) ->
+        Regex.replace(numbersonly, string, fn _, a, b, c ->
+          a <> "-" <> b <> "-" <> c
+        end)
+
+      Regex.match?(spaces, string) ->
+        Regex.replace(spaces, string, fn _, a, c, e ->
+          a <> "-" <> c <> "-" <> e
+        end)
+
+      Regex.match?(paren2dash, string) ->
+        Regex.replace(paren2dash, string, fn _, b, d, e, f, g ->
+          b <> d <> e <> f <> g
+        end)
+
+      Regex.match?(parenspace, string) ->
+        Regex.replace(parenspace, string, fn _, b, e, g ->
+          b <> "-" <> e <> "-" <> g
+        end)
+
+      Regex.scan(paren1dash, string) ->
+        Regex.replace(paren1dash, string, fn _, b, d, f ->
+          b <> "-" <> d <> "-" <> f
+        end)
+    end
+  end
+
+  def each(list) do
+    Enum.map(list, fn string -> condline(string) end)
+  end
+
+  def jam(list) do
+    Enum.join(list, "\n")
+  end
+
   def parse(string) do
+    string
+    |> PhoneNumber.split()
+    |> PhoneNumber.each()
+    |> PhoneNumber.jam()
   end
 end
 

@@ -54,7 +54,7 @@ Regex.scan(~r/hello/, "hello, world!")
 We can also match patterns using special characters. For example, `\d` will match any digit.
 
 ```elixir
-Regex.scan(~r/\d/, "h3ll0")
+Regex.scan(~r/\d/, "h3ll06767685")
 ```
 
 ## Building Regular Expressions
@@ -105,13 +105,13 @@ Regex.scan(~r/\w/, "abcd123")
 `.` matches any non-newline` \n` character.
 
 ```elixir
-Regex.scan(~r/./, "abcd\n123")
+Regex.scan(~r/./, "\nabcd123")
 ```
 
 `\s` matches whitespaces `" "`.
 
 ```elixir
-Regex.scan(~r/\s/, "a b c")
+Regex.scan(~r/\s/, "a b c     ")
 ```
 
 By combining these symbols, we can create more complex matches. For example, we
@@ -151,7 +151,7 @@ Regex.scan(~r/1+/, "11211")
 For example, we could match `a` and `ab` with `ab?`.
 
 ```elixir
-Regex.scan(~r/ab?/, "a ab")
+Regex.scan(~r/ab?/, "fabulous")
 ```
 
 `{}` allows us to specify a specific range of matches. `{3}` is exactly three matches. `{3,}` is
@@ -241,7 +241,7 @@ String.split("one,two,three", ",")
 ```
 
 ```elixir
-Regex.split(~r/\d/, "one1two2three")
+Regex.split(~r/\d/, "one1two2three655464765")
 ```
 
 [Regex.match/2](https://hexdocs.pm/elixir/Regex.html#match/2) checks if a string contains any match of the regular expression.
@@ -343,7 +343,10 @@ Replace `nil` with your answer.
 
 ```elixir
 obfuscate = fn string ->
-  nil
+  Regex.replace(~r/\d{3}-(\d{3})-\d{4}/, string, fn match, group2 ->
+    IO.inspect(group2, label: "group2")
+    "XXX-" <> group2 <> "-XXXX"
+  end)
 end
 
 Utils.feedback(:obfuscate_phone, obfuscate)
@@ -429,7 +432,9 @@ convert.("#1231231234 1231231234")
 
 ```elixir
 convert = fn string ->
-  nil
+  Regex.replace(~r/(?<=#)(\d{3})(\d{3})(\d{4})/, string, fn _, a, b, c ->
+    a <> "-" <> b <> "-" <> c
+  end)
 end
 
 Utils.feedback(:convert_phone, convert)

@@ -47,7 +47,59 @@ Enter your solution below.
 
 ```elixir
 defmodule Measurement do
-  def convert(from, to) do
+  def unit_value(unit) do
+    unit_value = %{
+      millimeter: 0.1,
+      meter: 100,
+      kilometer: 100_000,
+      inch: 2.54,
+      feet: 30,
+      yard: 91,
+      mile: 160_000,
+      centimeter: 1
+    }
+
+    Map.get(unit_value, unit)
+  end
+
+  def convert({unit, number}, new_unit) do
+    value = unit_value(unit)
+    newval = unit_value(new_unit)
+    IO.inspect(newval)
+
+    if value > newval do
+      {new_unit, number * (value * newval)}
+    else
+      {new_unit, number * (value / newval)}
+    end
+  end
+end
+
+Measurement.convert({:millimeter, 1}, :centimeter)
+```
+
+```elixir
+defmodule Measurement do
+  def unit_value(unit) do
+    unit_value = %{
+      millimeter: 0.1,
+      meter: 100,
+      kilometer: 100_000,
+      inch: 2.54,
+      feet: 30,
+      yard: 91,
+      mile: 160_000,
+      centimeter: 1
+    }
+
+    Map.get(unit_value, unit)
+  end
+
+  def convert({unit, number}, new_unit) do
+    value = unit_value(unit)
+    newval = unit_value(new_unit)
+    IO.inspect(newval)
+    {new_unit, number * (value / newval)}
   end
 end
 

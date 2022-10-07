@@ -81,12 +81,15 @@ classDiagram
 
 ```elixir
 defmodule Charmander do
+  defstruct hp: 39, attack: 52, defense: 43
 end
 
 defmodule Charmeleon do
+  defstruct hp: 58, attack: 64, defense: 58
 end
 
 defmodule Charizard do
+  defstruct hp: 78, attack: 84, defense: 78
 end
 
 Utils.feedback(:pokemon_evolution_structs, [Charmander, Charmeleon, Charizard])
@@ -116,6 +119,19 @@ Evolvable.evolve(%Charmeleon{})
 
 ```elixir
 defprotocol Evolvable do
+  def evolve(struct)
+end
+
+defimpl Evolvable, for: Charmander do
+  def evolve(_) do
+    %Charmeleon{}
+  end
+end
+
+defimpl Evolvable, for: Charmeleon do
+  def evolve(_) do
+    %Charizard{}
+  end
 end
 
 Utils.feedback(:evolvable, [Evolvable, Charmander, Charmeleon, Charizard])

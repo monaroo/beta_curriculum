@@ -61,13 +61,51 @@ The cypher should only handle lowercase letters and ignore non-alphabetical char
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-CaesarCypher.encode("et tu, brute?", 2)
+CaesarCypher.encode("et tu, brute?", )
 "gv vw, dtwvg?"
 ```
 
 Enter your solution below.
 
-<!-- livebook:{"attrs":{"assertions":"assert CaesarCypher.encode(\"\", 1), \"Ensure you implement the `encode/2` function.\"\nassert CaesarCypher.encode(\"\", 1) == \"\"\nassert CaesarCypher.encode(\"a\", 1) == \"b\"\nassert CaesarCypher.encode(\"a\", 14) == \"o\"\nassert CaesarCypher.encode(\"a\", 25) == \"z\"\nassert CaesarCypher.encode(\"z\", 1) == \"a\"\nassert CaesarCypher.encode(\"z\", 14) == \"n\"\nassert CaesarCypher.encode(\"z\", 25) == \"y\"\nassert CaesarCypher.encode(\"abcdefghijklmnopqrstuvwxyz\", 1) == \"bcdefghijklmnopqrstuvwxyza\"\nassert CaesarCypher.encode(\"abcdefghijklmnopqrstuvwxyz\", 14) == \"opqrstuvwxyzabcdefghijklmn\"\nassert CaesarCypher.encode(\"abcdefghijklmnopqrstuvwxyz\", 25) == \"zabcdefghijklmnopqrstuvwxy\"\nassert CaesarCypher.encode(\"et tu, brute?\", 2) == \"gv vw, dtwvg?\"\n\nassert CaesarCypher.decode(\"\", 1), \"Ensure you implement the `decode/2` function.\"\nassert CaesarCypher.decode(\"\", 1) == \"\"\nassert CaesarCypher.decode(\"b\", 1) == \"a\"\nassert CaesarCypher.decode(\"o\", 14) == \"a\"\nassert CaesarCypher.decode(\"z\", 25) == \"a\"\nassert CaesarCypher.decode(\"a\", 1) == \"z\"\nassert CaesarCypher.decode(\"n\", 14) == \"z\"\nassert CaesarCypher.decode(\"y\", 25) == \"z\"\nassert CaesarCypher.decode(\"bcdefghijklmnopqrstuvwxyza\", 1) == \"abcdefghijklmnopqrstuvwxyz\"\nassert CaesarCypher.decode(\"opqrstuvwxyzabcdefghijklmn\", 14) == \"abcdefghijklmnopqrstuvwxyz\"\nassert CaesarCypher.decode(\"zabcdefghijklmnopqrstuvwxy\", 25) == \"abcdefghijklmnopqrstuvwxyz\"\nassert CaesarCypher.decode(\"gv vw, dtwvg?\", 2) == \"et tu, brute?\"","attempts":7,"code":"defmodule CaesarCypher do\r\n  def encode(string, key) do\r\n  end\r\n\r\n  def decode(string, key) do\r\n  end\r\nend","solution":"defmodule CaesarCypher do\n  def decode(string, key) do\n    String.to_charlist(string)\n    |> Enum.map(fn char ->\n      cond do\n        char < ?a or ?z < char ->\n          char\n\n        char - key < ?a ->\n          ?z - (?a - (char - key)) + 1\n\n        true ->\n          char - key\n      end\n    end)\n    |> List.to_string()\n  end\n\n  def encode(string, key) do\n    String.to_charlist(string)\n    |> Enum.map(fn char ->\n      cond do\n        char < ?a or ?z < char ->\n          char\n\n        char + key > ?z ->\n          ?a + (char + key - ?z) - 1\n\n        true ->\n          char + key\n      end\n    end)\n    |> List.to_string()\n  end\nend","title":"Caesar Cypher Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+```elixir
+defmodule CaesarCypher do
+  def decode(string, key) do
+    String.to_charlist(string)
+    |> Enum.map(fn char ->
+      cond do
+        char < ?a or ?z < char ->
+          char
+
+        char - key < ?a ->
+          ?z - (?a - (char - key)) + 1
+
+        true ->
+          char - key
+      end
+    end)
+    |> List.to_string()
+  end
+
+  def encode(string, key) do
+    String.to_charlist(string)
+    |> Enum.map(fn char ->
+      cond do
+        char < ?a or ?z < char ->
+          char
+
+        char + key > ?z ->
+          ?a + (char + key - ?z) - 1
+
+        true ->
+          char + key
+      end
+    end)
+    |> List.to_string()
+  end
+end
+```
+
+<!-- livebook:{"attrs":{"assertions":"assert CaesarCypher.encode(\"\", 1), \"Ensure you implement the `encode/2` function.\"\nassert CaesarCypher.encode(\"\", 1) == \"\"\nassert CaesarCypher.encode(\"a\", 1) == \"b\"\nassert CaesarCypher.encode(\"a\", 14) == \"o\"\nassert CaesarCypher.encode(\"a\", 25) == \"z\"\nassert CaesarCypher.encode(\"z\", 1) == \"a\"\nassert CaesarCypher.encode(\"z\", 14) == \"n\"\nassert CaesarCypher.encode(\"z\", 25) == \"y\"\nassert CaesarCypher.encode(\"abcdefghijklmnopqrstuvwxyz\", 1) == \"bcdefghijklmnopqrstuvwxyza\"\nassert CaesarCypher.encode(\"abcdefghijklmnopqrstuvwxyz\", 14) == \"opqrstuvwxyzabcdefghijklmn\"\nassert CaesarCypher.encode(\"abcdefghijklmnopqrstuvwxyz\", 25) == \"zabcdefghijklmnopqrstuvwxy\"\nassert CaesarCypher.encode(\"et tu, brute?\", 2) == \"gv vw, dtwvg?\"\n\nassert CaesarCypher.decode(\"\", 1), \"Ensure you implement the `decode/2` function.\"\nassert CaesarCypher.decode(\"\", 1) == \"\"\nassert CaesarCypher.decode(\"b\", 1) == \"a\"\nassert CaesarCypher.decode(\"o\", 14) == \"a\"\nassert CaesarCypher.decode(\"z\", 25) == \"a\"\nassert CaesarCypher.decode(\"a\", 1) == \"z\"\nassert CaesarCypher.decode(\"n\", 14) == \"z\"\nassert CaesarCypher.decode(\"y\", 25) == \"z\"\nassert CaesarCypher.decode(\"bcdefghijklmnopqrstuvwxyza\", 1) == \"abcdefghijklmnopqrstuvwxyz\"\nassert CaesarCypher.decode(\"opqrstuvwxyzabcdefghijklmn\", 14) == \"abcdefghijklmnopqrstuvwxyz\"\nassert CaesarCypher.decode(\"zabcdefghijklmnopqrstuvwxy\", 25) == \"abcdefghijklmnopqrstuvwxyz\"\nassert CaesarCypher.decode(\"gv vw, dtwvg?\", 2) == \"et tu, brute?\"","attempts":6,"code":"defmodule CaesarCypher do\n  def decode(string, key) do\n    String.to_charlist(string)\n    |> Enum.map(fn char ->\n      cond do\n        char < ?a or ?z < char ->\n          char\n\n        char - key < ?a ->\n          ?z - (?a - (char - key)) + 1\n\n        true ->\n          char - key\n      end\n    end)\n    |> List.to_string()\n  end\n\n  def encode(string, key) do\n    String.to_charlist(string)\n    |> Enum.map(fn char ->\n      cond do\n        char < ?a or ?z < char ->\n          char\n\n        char + key > ?z ->\n          ?a + (char + key - ?z) - 1\n\n        true ->\n          char + key\n      end\n    end)\n    |> List.to_string()\n  end\nendd\r\nend","solution":"defmodule CaesarCypher do\n  def decode(string, key) do\n    String.to_charlist(string)\n    |> Enum.map(fn char ->\n      cond do\n        char < ?a or ?z < char ->\n          char\n\n        char - key < ?a ->\n          ?z - (?a - (char - key)) + 1\n\n        true ->\n          char - key\n      end\n    end)\n    |> List.to_string()\n  end\n\n  def encode(string, key) do\n    String.to_charlist(string)\n    |> Enum.map(fn char ->\n      cond do\n        char < ?a or ?z < char ->\n          char\n\n        char + key > ?z ->\n          ?a + (char + key - ?z) - 1\n\n        true ->\n          char + key\n      end\n    end)\n    |> List.to_string()\n  end\nend","title":"Caesar Cypher Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -80,11 +118,41 @@ defmodule Assertion do
       Process.flag(:trap_exit, true)
 
       defmodule CaesarCypher do
-        def encode(string, key) do
+        def decode(string, key) do
+          String.to_charlist(string)
+          |> Enum.map(fn char ->
+            cond do
+              char < ?a or ?z < char ->
+                char
+
+              char - key < ?a ->
+                ?z - (?a - (char - key)) + 1
+
+              true ->
+                char - key
+            end
+          end)
+          |> List.to_string()
         end
 
-        def decode(string, key) do
+        def encode(string, key) do
+          String.to_charlist(string)
+          |> Enum.map(fn char ->
+            cond do
+              char < ?a or ?z < char ->
+                char
+
+              char + key > ?z ->
+                ?a + (char + key - ?z) - 1
+
+              true ->
+                char + key
+            end
+          end)
+          |> List.to_string()
         end
+
+        endd
       end
 
       assert CaesarCypher.encode("", 1), "Ensure you implement the `encode/2` function."
@@ -126,17 +194,17 @@ defmodule Assertion do
 
             #{inspect(error)}
 
-            When it received: #{inspect(message)} #{message_type}
+            When it recieved: #{inspect(message)} #{message_type}
 
             Likely you need to define the corresponding handler for #{inspect(message)}.
 
-            Ensure you defined a `handle_call/3`, `handle_info/2`, or `handle_cast/2` or appropriate handler function.
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
 
               def handle_call(:message, _from, state) do
                 ...
               end
 
-            Then ensure you call [GenServer.call/2](https://hexdocs.pm/elixir/GenServer.html#call/2), [GenServer.cast/2](https://hexdocs.pm/elixir/GenServer.html#cast/2), or otherwise send the message correctly.
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
 
               GenServer.call(pid, :message)
         """)
@@ -163,11 +231,41 @@ ExUnit.run()
 # Also allows for exploration using the output of the cell.
 # Unfortunately, this results in duplication of warnings.
 defmodule CaesarCypher do
-  def encode(string, key) do
+  def decode(string, key) do
+    String.to_charlist(string)
+    |> Enum.map(fn char ->
+      cond do
+        char < ?a or ?z < char ->
+          char
+
+        char - key < ?a ->
+          ?z - (?a - (char - key)) + 1
+
+        true ->
+          char - key
+      end
+    end)
+    |> List.to_string()
   end
 
-  def decode(string, key) do
+  def encode(string, key) do
+    String.to_charlist(string)
+    |> Enum.map(fn char ->
+      cond do
+        char < ?a or ?z < char ->
+          char
+
+        char + key > ?z ->
+          ?a + (char + key - ?z) - 1
+
+        true ->
+          char + key
+      end
+    end)
+    |> List.to_string()
   end
+
+  endd
 end
 ```
 

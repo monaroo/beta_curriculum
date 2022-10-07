@@ -71,6 +71,25 @@ Enter your solution below.
 ```elixir
 defmodule Rollable do
   def replace(string) do
+    # origstring =  "[diceroll](https://www.google.com/search?q=roll+diceroll)"
+    # String.replace(origstring, "diceroll", string )
+    Regex.replace(~r/(\d{1,2}d\d{1,2})/, string, fn _, group ->
+      "[#{group}](https://www.google.com/search?q=roll+#{group})"
+    end)
+  end
+end
+
+Rollable.replace("Ice Shard: deal 12d4 ice damage.")
+```
+
+```elixir
+defmodule Rollable do
+  def replace(string) do
+    # origstring =  "[diceroll](https://www.google.com/search?q=roll+diceroll)"
+    # String.replace(origstring, "diceroll", string )
+    Regex.replace(~r/(\d{1,2}d\d{1,2})/, string, fn _, group ->
+      "[#{group}](https://www.google.com/search?q=roll+#{group})"
+    end)
   end
 end
 
