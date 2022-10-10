@@ -141,9 +141,9 @@ You may need to click the **Connect** button to reconnect the Elixir runtime.
 
 ```elixir
 # defmodule Body do
-#   def recursion([head | tail]) do
-#     recursion(tail ++ tail) ++ [head]
-#   end
+#  def recursion([head | tail]) do
+#   recursion(tail ++ tail) ++ [head]
+# end
 # end
 
 # Body.recursion([1,2,3])
@@ -289,10 +289,16 @@ CustomEnum.map([1, 2, 3], fn each -> each * 2 end)
 
 ```elixir
 defmodule CustomEnum do
-  def map(list, function) do
+  def map([], _function) do
+    []
+  end
+
+  def map([head | tail], function) do
+    [function.(head) | map(tail, function)]
   end
 end
 
+CustomEnum.map([1, 2, 3], fn each -> each * 2 end)
 Utils.feedback(:custom_enum_map, CustomEnum)
 ```
 
