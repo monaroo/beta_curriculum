@@ -109,10 +109,10 @@ That's why in the code below, `three/0` executes, then `two/1`, then `one/1`.
 
 ```elixir
 one = fn _ -> IO.inspect("one") end
-two = fn _ -> IO.inspect("two") end
-three = fn -> IO.inspect("three") end
+two = fn -> IO.inspect("two") end
+three = fn _ -> IO.inspect("three") end
 
-one.(two.(three.()))
+one.(three.(two.()))
 ```
 
 ### Stack Overflow
