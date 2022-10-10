@@ -120,6 +120,7 @@ defimpl Character, for: Archer do
   end
 end
 
+Map.update()
 # Enter your solution above
 Utils.feedback(:battle_map, [Character, Barbarian, Wizard])
 ```
