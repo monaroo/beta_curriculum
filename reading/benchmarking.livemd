@@ -67,7 +67,7 @@ Replace `nil` with your answer.
 ```elixir
 slow_function = fn -> Process.sleep(1000) end
 
-result = nil
+result = :timer.tc(fn -> Process.sleep(1000) end)
 
 Utils.feedback(:timer_tc, result)
 ```
@@ -105,6 +105,14 @@ We've installed Benchee for you for this lesson, but be aware if you try to use 
 other projects it likely isn't installed.
 
 We can use the [Benchee.run/2](https://hexdocs.pm/benchee/Benchee.html#run/2) function to measure the performance and memory consumption of some function.
+
+```elixir
+otp_release = :erlang.system_info(:otp_release)
+File.mkdir_p!(Path.join([:code.root_dir(), "releases", otp_release]))
+
+Path.join([:code.root_dir(), "releases", otp_release, "OTP_VERSION"])
+|> File.write!("25.0")
+```
 
 ```elixir
 Benchee.run(%{
@@ -177,8 +185,8 @@ You should notice the list is faster this time, or at least about the same speed
 
 ```elixir
 Benchee.run(%{
-  "access first element in list" => fn -> nil end,
-  "access first element in tuple" => fn -> nil end
+  "access first element in list" => fn -> Enum.at(large_list, 0) end,
+  "access first element in tuple" => fn -> elem(large_tuple, 0) end
 })
 ```
 
