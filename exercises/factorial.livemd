@@ -47,7 +47,66 @@ Factorial.of(10)
 
 ```elixir
 defmodule Factorial do
-  def of(n) do
+  defp product([]) do
+    1
+  end
+
+  defp product([head | tail]) do
+    head * product(tail)
+  end
+
+  def of(n) when is_integer(n) do
+    cond do
+      n == 0 ->
+        [0]
+
+      n < 0 ->
+        c = n..-1
+        d = Enum.to_list(c)
+        product(d)
+
+      n > 1 ->
+        a = 1..n
+        b = Enum.to_list(a)
+        product(b)
+
+      n == 1 ->
+        [1]
+    end
+  end
+end
+
+Factorial.of(9)
+```
+
+```elixir
+defmodule Factorial do
+  defp product([]) do
+    1
+  end
+
+  defp product([head | tail]) do
+    head * product(tail)
+  end
+
+  def of(n) when is_integer(n) do
+    cond do
+      n == 0 ->
+        0
+
+      n < 0 ->
+        c = n..-1
+        d = Enum.to_list(c)
+        product(d)
+
+      n > 1 ->
+        a = 1..n
+        b = Enum.to_list(a)
+        product(b)
+
+      n == 1 ->
+        1
+    end
   end
 end
 ```

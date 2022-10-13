@@ -57,7 +57,30 @@ $L(n)=L(n-1)+L(n - 2)$.
 
 ```elixir
 defmodule LucasNumbers do
-  def generate(n) do
+  def generate(1) do
+    [2]
+  end
+
+  def generate(2) do
+    [2, 1]
+  end
+
+  def generate(count) do
+    case is_integer(count) do
+      true ->
+        case count >= 1 do
+          true ->
+            golden = 1.61803398875
+            b = count - 1
+
+            a =
+              Enum.to_list(2..b)
+              |> Enum.map(fn x -> :math.pow(golden, x) |> round end)
+              |> IO.inspect()
+
+            Enum.concat([2, 1], a)
+        end
+    end
   end
 end
 
