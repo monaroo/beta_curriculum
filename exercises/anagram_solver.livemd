@@ -46,9 +46,30 @@ Enter your solution in the Elixir cell below,
 
 ```elixir
 defmodule AnagramSolver do
-  def solve(word) do
+  def solve(string) when is_binary(string) do
+    string
+    |> String.to_charlist()
+    |> do_solve()
+    |> Enum.map(&to_string/1)
+  end
+
+  defp do_solve([]) do
+    [[]]
+  end
+
+  defp do_solve([h]) do
+    [[h]]
+  end
+
+  defp do_solve(list) do
+    for first <- list,
+        rest <- do_solve(list -- [first]) do
+      [first | rest]
+    end
   end
 end
+
+AnagramSolver.solve("elixir")
 ```
 
 ### Validate Your Solution
