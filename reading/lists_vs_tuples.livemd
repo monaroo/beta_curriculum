@@ -148,7 +148,11 @@ In the Elixir cell below, use the `:timer.tc/1` function to time how long it tak
 `50000` elements. Then do the same for tuples.
 
 ```elixir
-
+lis = Enum.to_list(1..50000)
+tup = List.to_tuple(lis)
+{listtime, _result} = :timer.tc(fn -> [100 | lis] end)
+{tupletime, _result} = :timer.tc(fn -> Tuple.insert_at(tup, 0, 100) end)
+%{tuple: tupletime, list: listtime}
 ```
 
 ## Accessing
@@ -214,7 +218,11 @@ to access the first element, and last element of a list with `5000` elements.
 Then do the same for tuples.
 
 ```elixir
-
+mylist = Enum.to_list(1..5000)
+mytuple = List.to_tuple(mylist)
+{mylist_time, _result} = :timer.tc(fn -> Enum.at(mylist, 0) end)
+{mytuple_time, _result} = :timer.tc(fn -> elem(mytuple, 0) end)
+%{list: mylist_time, tuple: mytuple_time}
 ```
 
 ## Concatenation
@@ -273,7 +281,10 @@ to concatenate a list with one element and a list with 5000 elements.
 Then try to concatenate a list with 5000 elements to a list with 1 element. Notice how it takes longer.
 
 ```elixir
-
+mylist = Enum.to_list(1..5000)
+{time1, _result} = :timer.tc(fn -> [1] ++ mylist end)
+{time2, _result} = :timer.tc(fn -> mylist ++ [1] end)
+%{first: time1, second: time2}
 ```
 
 ## Updating (Replacing)
@@ -338,14 +349,22 @@ In the Elixir cell below, use `:timer.tc/1` to compare updating the **first** el
 and tuple with `5000` elements.
 
 ```elixir
-
+mylist = Enum.to_list(1..5000)
+mytuple = List.to_tuple(mylist)
+{list, _result} = :timer.tc(fn -> List.replace_at(mylist, 0, 2) end)
+{tuple, _result} = :timer.tc(fn -> :erlang.setelement(5000, mytuple, 2) end)
+%{timel: list, timet: tuple}
 ```
 
 In the Elixir cell below, use `:timer.tc/1` to compare updating the **last** element of a list and tuple
 with `5000` elements.
 
 ```elixir
-
+mylist = Enum.to_list(1..5000)
+mytuple = List.to_tuple(mylist)
+{list, _result} = :timer.tc(fn -> List.replace_at(mylist, 5000, 2) end)
+{tuple, _result} = :timer.tc(fn -> :erlang.setelement(5000, mytuple, 2) end)
+%{timel: list, timet: tuple}
 ```
 
 ## Inserting
@@ -391,7 +410,12 @@ prove that inserting at the end of both a list and a tuple has $O(n)$ time compl
 In the Elixir cell below, use `:timer.tc` to insert to the end of a large `50000` element list and tuple.
 
 ```elixir
+mylist = Enum.to_list(1..50000)
+mytuple = List.to_tuple(mylist)
+{tuple_time, _result} = :timer.tc(fn -> Tuple.insert_at(mytuple, 50000, 7) end)
+{list_time, _result} = :timer.tc(fn -> List.insert_at(mylist, 50000, 7) end)
 
+%{tuple: tuple_time, list: list_time}
 ```
 
 ## Deleting
