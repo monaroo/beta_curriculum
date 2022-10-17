@@ -30,7 +30,7 @@ memory during execution.
 1..10
 |> Enum.map(fn each -> each * 2 end)
 |> Enum.filter(fn each -> each <= 10 end)
-|> Enum.take(4)
+|> Enum.take(5)
 ```
 
 Each [Enum](https://hexdocs.pm/elixir/Enum.html) function stores a copy of the the enumerable it creates and executes sequentially as
@@ -139,7 +139,10 @@ In the Elixir cell below, try refactoring this code using the [Stream](https://h
 ```
 
 ```elixir
-
+1..100
+|> Stream.map(fn each -> div(each, 2) end)
+|> Stream.map(fn each -> each * 3 end)
+|> Enum.filter(fn each -> rem(each, 2) === 0 end)
 ```
 
 ## Stream Gotchas
@@ -232,7 +235,7 @@ Here's that shown using [Stream.cycle/2](https://hexdocs.pm/elixir/Stream.html#c
 
 ```elixir
 Stream.cycle([1, 2, 3])
-|> Enum.take(10)
+|> Enum.take(12)
 ```
 
 We've been using Streams for a while now! Did you know that ranges are Streams? Each element
@@ -322,7 +325,7 @@ We're limited to how many elements we can display, so if the integer is
 too large you might not see the end of the list.
 
 ```elixir
-starting_integer = 20
+starting_integer = 27
 
 Stream.iterate(starting_integer, fn n -> if rem(n, 2) === 0, do: div(n, 2), else: 3 * n + 1 end)
 |> Enum.take(100)
@@ -395,7 +398,13 @@ to evaluate the first `100` numbers. You need to reverse the generated stream be
 I.e. $1^3, 2^3, 3^3, 4^3, ...$ which would be `[1, 8, 27 , 64]` and so on.
 
 ```elixir
-
+Stream.unfold(1, fn
+  n ->
+    cubed = n * n * n
+    next = n + 1
+    {cubed, next}
+end)
+|> Enum.take(100)
 ```
 
 ## Commit Your Progress
