@@ -51,8 +51,66 @@ Fibonacci.sequence(4)
 ```elixir
 defmodule Fibonacci do
   def sequence(n) do
+    Enum.reverse(seq(n))
+  end
+
+  def seq(0) do
+    [0]
+  end
+
+  def seq(1) do
+    [1, 0]
+  end
+
+  def seq(n) when n > 1 do
+    [h1, h2 | _tail] = prev = seq(n - 1)
+    [h1 + h2 | prev]
   end
 end
+
+Fibonacci.sequence(7)
+```
+
+```elixir
+defmodule Fibonacci do
+  def sequence(n) do
+    Enum.reverse(seq(n))
+  end
+
+  defp seq(0) do
+    [0]
+  end
+
+  defp seq(1) do
+    [1, 0]
+  end
+
+  defp seq(n) when n > 1 do
+    [h1, h2 | _tail] = prev = seq(n - 1)
+    [h1 + h2 | prev]
+  end
+
+  def num(0) do
+    0
+  end
+
+  def num(1) do
+    1
+  end
+
+  def num(n) when n > 1 do
+    num(n - 1) + num(n - 2)
+  end
+
+  def map(n) do
+    {sequ, _result} = :timer.tc(fn -> Fibonacci.sequence(n) end)
+    {number, _result} = :timer.tc(fn -> Fibonacci.num(n) end)
+
+    %{seq: sequ, num: number}
+  end
+end
+
+Fibonacci.map(20)
 ```
 
 ## Competition
