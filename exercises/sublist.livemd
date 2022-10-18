@@ -33,7 +33,7 @@ iex(2)> Sublists.sublists(list, 3)
 ```elixir
 defmodule Sublist do
   def sublists(list, size) do
-    list
+    Enum.chunk_every(list, size, 1, :discard)
   end
 end
 
