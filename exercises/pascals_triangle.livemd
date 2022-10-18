@@ -115,11 +115,42 @@ Pascal.of(5)
 
 ```elixir
 defmodule Pascal do
+  defp newname(0) do
+    [[0]]
+  end
+
+  defp newname(1) do
+    [[1]]
+  end
+
+  defp newname(2) do
+    [[1, 1], [1]]
+  end
+
+  defp newname(n) when n > 2 do
+    IO.inspect(n)
+    [h | _t] = prev = newname(n - 1)
+    IO.inspect(prev, label: "prev")
+
+    newh =
+      h
+      |> IO.inspect()
+      |> Enum.chunk_every(2, 1, :discard)
+      |> IO.inspect(label: "chonked #{n}")
+      |> Enum.map(fn each -> Enum.sum(each) end)
+      |> IO.inspect(label: "mapped #{n}")
+      |> then(fn list -> [1] ++ list ++ [1] end)
+
+    [newh | prev]
+  end
+
   def of(n) do
+    Enum.reverse(newname(n))
   end
 end
 
-Utils.feedback(:pascal, Pascal)
+Pascal.of(5)
+# Utils.feedback(:pascal, Pascal)
 ```
 
 ## Commit Your Progress
