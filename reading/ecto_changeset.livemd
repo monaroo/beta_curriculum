@@ -250,6 +250,24 @@ A blog should have:
 * A required `:body` string field.
 * A list of tags no more than 5.
 
+```elixir
+init_data = %{}
+
+params = %{
+  title: "Why Girls Go to College",
+  body: "To Get More Knowledge",
+  tags: ~w[ funny joke haha lol immature]
+}
+
+types = %{title: :string, body: :string, tags: {:array, :string}}
+keys = [:title, :body, :tags]
+
+changeset =
+  Ecto.Changeset.cast({init_data, types}, params, keys)
+  |> Ecto.Changeset.validate_required([:title, :body])
+  |> Ecto.Changeset.validate_length(:tags, max: 5)
+```
+
 ## Schemaless Changesets
 
 We often store the associated changeset and validations inside of a struct. The struct typically has a `changeset/2` function
@@ -291,7 +309,7 @@ defmodule User do
   import Ecto.Changeset
   defstruct [:username, :password, :terms_and_conditions]
 
-  @types %{username: :string, password: :string, terms_and_conditions: :boolean}
+  # @types %{username: :string, password: :string, terms_and_conditions: :boolean}
 
   def changeset(%User{} = user, params) do
     {user, @types}
@@ -323,8 +341,43 @@ A book should have:
 * An `:is_licenced` field which must always be true.
 
 ```elixir
-defmodule Blog do
+defmodule Book do
+  import Ecto.Changeset
+  defstruct [:title, :published_status, :body, :published_on, :author, :is_licensed]
+
+  @types %{
+    title: :string,
+    body: :string,
+    published_status: :boolean,
+    published_on: :date,
+    author: :string,
+    is_licensed: :boolean
+  }
+
+  def changeset(%Book{} = book, params) do
+    {book, @types}
+    |> cast(params, Map.keys(@types))
+    |> validate_required([:title, :body, :author, :published_on])
+    |> validate_length(:title, min: 3, max: 100)
+    |> validate_acceptance(:published_status)
+    |> validate_acceptance(:is_licensed)
+  end
+
+  def new(params) do
+    %Book{}
+    |> changeset(params)
+    |> apply_action(:update)
+  end
 end
+
+Book.new(%{
+  title: "War and Peace",
+  published_status: true,
+  body: "It was the best of times, it was the worst of times...",
+  published_on: ~D[1869-01-01],
+  author: "Leo Tolstoy",
+  is_licensed: true
+})
 ```
 
 ## Commit Your Progress
