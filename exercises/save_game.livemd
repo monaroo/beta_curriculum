@@ -52,9 +52,11 @@ Enter your solution below.
 ```elixir
 defmodule Game do
   def save(data, filename) do
+    File.write("../#{filename}", "../#{data}")
   end
 
   def retrieve(filename) do
+    File.read!("../#{filename}")
   end
 end
 ```

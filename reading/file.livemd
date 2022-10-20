@@ -49,7 +49,7 @@ In the Elixir cell below, try listing the parent directory of this Livebook file
 [File.ls/1](https://hexdocs.pm/elixir/File.html#ls/1).
 
 ```elixir
-File.ls(".")
+File.ls("../")
 File.cwd!()
 ```
 
@@ -80,13 +80,14 @@ If you try to read a non-existing file, you'll retrieve an error `{:error, :enoe
 
 ```elixir
 File.read("data/non_existing_file")
+File.ls()
 ```
 
 You can also read a file using [File.read!/1](https://hexdocs.pm/elixir/File.html#read!/1). The bang `!` convention means that the function will crash instead of returning an error tuple. You'll often use this when you anticipate the file always existing and want to stop
 execution if it doesn't.
 
 ```elixir
-File.read!("data/non_existing_file")
+File.read!("../data/non_existing_file")
 ```
 
 ### Your Turn
@@ -95,7 +96,7 @@ Go to the `reading` folder in your code editor and create a new file. Name it an
 some text in the file, then in the Elixir cell below, use [File.read/1](https://hexdocs.pm/elixir/File.html#read/1) to read the file's contents.
 
 ```elixir
-
+File.read("../reading/newfile")
 ```
 
 ## File.mkdir/1
@@ -107,8 +108,8 @@ In the Elixir cell below, try entering your `name` in the empty string below, an
 `File.mkdir("#{name}_made_this")`
 
 ```elixir
-name = ""
-# File.mkdir("data/#{name}_made_this")
+name = "Mona"
+File.mkdir("../data/#{name}_made_this")
 ```
 
 `mkdir/1` can only create a folder in the current directory. It cannot create nested folders.
@@ -135,7 +136,7 @@ In the Elixir cell below, change the content of `"hello, world!"` then open the 
 Notice that the `write_test` file has different content now.
 
 ```elixir
-File.write("data/write_test", "hello, world!")
+File.write("data/write_test", "elixir is cool")
 ```
 
 ### Invalid File Locations
@@ -187,7 +188,7 @@ In the Elixir cell below, delete the written file `"data/delete_me"` using
 [File.rm/2](https://hexdocs.pm/elixir/File.html#rm/2). Check the `data` folder to make sure.
 
 ```elixir
-File.write("data/delete_me", "")
+File.rm("../data/delete_me")
 ```
 
 ## Persisting Erlang Terms
@@ -248,6 +249,11 @@ a binary and convert the binary back into a list.
 
 ```elixir
 grocery_list = ["eggs", "cheese", "sugar"]
+newlist = :erlang.term_to_binary(grocery_list)
+File.write("../data/grocery_list", newlist)
+
+File.read!("../data/grocery_list")
+|> :erlang.binary_to_term()
 ```
 
 ## Handling Large Files
@@ -263,7 +269,7 @@ file and work with it line by line.
 for now, we will leave an empty list `[]`.
 
 ```elixir
-File.open("data/open_example", [], fn _file ->
+File.open("../data/open_example", [], fn _file ->
   "return some value"
 end)
 ```
@@ -374,13 +380,13 @@ If you would prefer to append information and preserve the existing text in the 
 you can use the `:append` mode for [File.open/3](https://hexdocs.pm/elixir/File.html#open/3).
 
 ```elixir
-File.write("data/open_write_example", "I will be preserved")
+File.write("data/open_write_example", "I will be preserved.")
 
-File.open("data/large_data", [:append], fn file ->
-  IO.puts(file, "write content from IO.puts")
+File.open("data/open_write_example", [:append], fn file ->
+  IO.puts(file, " write content from IO.puts")
 end)
 
-File.read("data/large_data")
+File.read("data/open_write_example")
 ```
 
 ### File.open/2
@@ -424,9 +430,14 @@ Each element in the stream will be a file line by default.
 The `stream_data` file should look like this:
 
 ```ext
-1
-2
-3
+%File.Stream{
+  path: "data/stream_example",
+  modes: [:raw, :read_ahead, :binary],
+  line_or_bytes: :line,
+  raw: true
+}
+
+
 ```
 
 That means each line (including the newline character) will be an element in the stream.
@@ -462,7 +473,8 @@ and discover information when they need it.
 In the Elixir cell below, take the written file `data/copy_example` and copy the information it contains into a new file `data/copied_example`.
 
 ```elixir
-File.write("data/copy_example", "Copy me!")
+File.write("data/copy_example", "Copy meeee!")
+File.copy("data/copy_example", "data/copied_example")
 ```
 
 To confirm you did it correctly, evaluate the Elixir cell below.
