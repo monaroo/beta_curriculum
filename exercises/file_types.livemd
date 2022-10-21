@@ -21,7 +21,7 @@ Create a `FileTypes` module which can display the number of files of a given typ
 For example, we have create a `file_types` folder with several files inside of it.
 
 ```elixir
-File.ls!("data/file_types")
+File.ls!("../data/file_types")
 ```
 
 Provided a folder, your `FileTypes` module should return the number of files by their extension.
@@ -37,8 +37,18 @@ Enter your solution below.
 ```elixir
 defmodule FileTypes do
   def find(folder) do
+    {:ok, list} = File.ls(folder)
+
+    list
+    |> Enum.map(&String.split(&1, "."))
+    |> Enum.map(&List.last/1)
+    |> Enum.group_by(fn x -> x end)
+    |> Enum.map(fn {key, value} -> {String.to_atom(key), Enum.count(value)} end)
+    |> Enum.into(%{})
   end
 end
+
+FileTypes.find("../data/file_types")
 ```
 
 ## Commit Your Progress
