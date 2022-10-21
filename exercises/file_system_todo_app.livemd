@@ -61,14 +61,26 @@ Enter your solution in the Elixir cell below.
 ```elixir
 defmodule TodoList do
   def add(item) do
+    File.write("../data/todolist", "#{item}\n", [:append])
   end
 
   def complete(item) do
+    {_complete_new, complete_newer} = File.read("../data/todolist")
+
+    {_one, the_other} =
+      File.open("../data/todolist", fn _item -> String.replace(complete_newer, "#{item}", "") end)
+
+    File.write("../data/todolist", the_other)
   end
 
   def list do
+    File.open("../data/todolist", [:read], fn file ->
+      IO.read(file, :all)
+    end)
   end
 end
+
+TodoList.list()
 ```
 
 ## Commit Your Progress
