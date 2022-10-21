@@ -54,7 +54,18 @@ Enter your solution below.
 
 ```elixir
 defmodule PhoneNumbers do
+  def read do
+    File.read("../data/phone_numbers.txt")
+  end
+
   def get do
+    File.stream!("../data/phone_numbers.txt")
+    |> Enum.map(fn line ->
+      line
+      |> String.replace("-", "")
+      |> String.replace("\n", "")
+      |> String.to_integer()
+    end)
   end
 end
 
