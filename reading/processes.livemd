@@ -188,7 +188,7 @@ Spawn a linked process and crash this Elixir cell below.
 Comment out your solution when complete to avoid continuously crashing the livebook!
 
 ```elixir
-
+# my_pid = spawn_link(fn -> raise "whoops" end)
 ```
 
 ## Message Passing
@@ -234,7 +234,14 @@ In the Elixir cell below, spawn a new process and send it a message `{:hello, "w
 `IO.puts` the message's payload where `"world"` is the payload.
 
 ```elixir
+pid =
+  spawn(fn ->
+    receive do
+      {:hello, payload} -> IO.puts(payload)
+    end
+  end)
 
+send(pid, {:hello, "world"})
 ```
 
 ## State
@@ -351,8 +358,20 @@ send(todo_list_process, {:remove, "new todo list item"})
 ```elixir
 defmodule TodoListProcess do
   def loop(state \\ []) do
+    IO.inspect(state, label: "state")
+
+    receive do
+      {:add, message} -> loop(state ++ [message])
+      {:remove, message} -> loop(state -- [message])
+    end
   end
 end
+
+todo_list_process = spawn(fn -> TodoListProcess.loop() end)
+```
+
+```elixir
+send(todo_list_process, {:add, "get dressed"})
 ```
 
 ## Commit Your Progress
