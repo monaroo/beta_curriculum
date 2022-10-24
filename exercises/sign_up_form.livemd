@@ -47,13 +47,40 @@ Enter your solution below.
 defmodule User do
   use Ecto.Schema
   import Ecto.Changeset
+  defstruct [:username, :password, :age, :agreed_to_terms_and_conditions]
+
+  @types %{
+    username: :string,
+    password: :string,
+    email: :string,
+    age: :integer,
+    agreed_to_terms_and_conditions: :boolean
+  }
 
   def changeset(%User{} = user, params) do
+    {user, @types}
+    |> cast(params, [:username, :password, :email, :age, :agreed_to_terms_and_conditions])
+    |> validate_required([:username, :password])
+    |> validate_format(:email, ~r/@/)
+    |> validate_length(:username, min: 3, max: 12)
+    |> validate_length(:password, min: 12, max: 50)
+    |> validate_acceptance(:agreed_to_terms_and_conditions)
   end
 
   def new(params) do
+    %User{}
+    |> changeset(params)
+    |> apply_action(:update)
   end
 end
+
+User.new(%{
+  username: "bobthesnob3",
+  age: 45,
+  password: "cr01ss4ntsRlyf3",
+  email: "bob.bongus@bobb.com",
+  agreed_to_terms_and_conditions: true
+})
 ```
 
 ## Commit Your Progress
