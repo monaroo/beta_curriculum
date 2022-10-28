@@ -457,7 +457,7 @@ end
 ```
 
 ```elixir
-GenServer.call(journal_pid, {:add_entry, "an entry"})
+GenServer.call(journal_pid, {:add_entry, "entry"})
 ```
 
 ## Commit Your Progress
