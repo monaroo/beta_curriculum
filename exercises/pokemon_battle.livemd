@@ -361,7 +361,8 @@ defmodule Assertion do
       defmodule PokemonBattle do
   #def battle(pokemon1, pokemon2) do
    # cond
-      #pokemon1.type == :fire && pokemon2.type == :grass -> ""  #end
+      #pokemon1.type == :fire && pokemon2.type == :grass -> ""
+  #end
 
   def attack(poke1, poke2) do
     poke2.health - poke1.attack
@@ -469,7 +470,8 @@ ExUnit.run()
 defmodule PokemonBattle do
   #def battle(pokemon1, pokemon2) do
    # cond
-      #pokemon1.type == :fire && pokemon2.type == :grass -> ""  #end
+      #pokemon1.type == :fire && pokemon2.type == :grass -> ""
+  #end
 
   def attack(poke1, poke2) do
     poke2.health - poke1.attack

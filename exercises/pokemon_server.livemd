@@ -5,7 +5,9 @@ Mix.install([
   {:youtube, github: "brooklinjazz/youtube"},
   {:hidden_cell, github: "brooklinjazz/hidden_cell"},
   {:tested_cell, github: "brooklinjazz/tested_cell"},
-  {:utils, path: "#{__DIR__}/../utils"}
+  {:utils, path: "#{__DIR__}/../utils"},
+  {:kino, "~> 0.7", override: true},
+  {:ecto, ">= 0.0.0"}
 ])
 ```
 
@@ -131,7 +133,68 @@ Enter your solution in the Elixir cell below.
 
 ```elixir
 defmodule Pokemon do
+  import Ecto.Changeset
+  defstruct [:name, :type, health: 20, attack: 5]
+
+  @types %{name: :string, type: :string, health: :integer, attack: :integer}
+
+  def changeset(%Pokemon{} = pokemon, params) do
+    {pokemon, @types}
+    |> Ecto.Changeset.cast(params, Map.keys(@types))
+    |> Ecto.Changeset.validate_inclusion(:type, ["water", "fire", "grass"])
+    |> Ecto.Changeset.validate_required([:name, :type])
+    |> Ecto.Changeset.validate_number(:health, greater_than: 0)
+    |> Ecto.Changeset.validate_number(:attack, greater_than_or_equal_to: 1)
+  end
+
+  def new(params) do
+    %Pokemon{}
+    |> changeset(params)
+    |> Ecto.Changeset.apply_action(:update)
+  end
+
+  def attack(%Pokemon{} = attacker, %Pokemon{} = defender) do
+    newhealth = defender.health - attacknumber(attacker, defender)
+
+    if newhealth <= 0 do
+      %{defender | health: 0}
+    else
+      %{defender | health: newhealth}
+    end
+  end
+
+  defp attacknumber(%Pokemon{type: "fire", attack: attack}, %Pokemon{type: "grass"}) do
+    attack * 2
+  end
+
+  defp attacknumber(%Pokemon{type: "water", attack: attack}, %Pokemon{type: "fire"}) do
+    attack * 2
+  end
+
+  defp attacknumber(%Pokemon{type: "grass", attack: attack}, %Pokemon{type: "water"}) do
+    attack * 2
+  end
+
+  defp attacknumber(%Pokemon{type: "grass", attack: attack}, %Pokemon{type: "fire"}) do
+    attack / 2
+  end
+
+  defp attacknumber(%Pokemon{type: "fire", attack: attack}, %Pokemon{type: "water"}) do
+    attack / 2
+  end
+
+  defp attacknumber(%Pokemon{type: "water", attack: attack}, %Pokemon{type: "grass"}) do
+    attack / 2
+  end
+
+  defp attacknumber(%Pokemon{type: type, attack: attack}, %Pokemon{type: type}) do
+    attack
+  end
 end
+
+{:ok, bulbasaur} = Pokemon.new(%{name: "bulbasaur", type: "grass", health: 15})
+{:ok, charizard} = Pokemon.new(%{name: "charizard", type: "fire"})
+Pokemon.new(%{name: "charmander", type: "fire"})
 ```
 
 ## Create A Pokemon Genserver
@@ -172,15 +235,15 @@ We should be able to attack another pokemon.
 <!-- livebook:{"force_markdown":true} -->
 
 ```elixir
-{:ok, charmander} = Pokemon.new(%{name: "charmander", type: "fire", damage: 20})
+{:ok, charmander} = Pokemon.new(%{name: "charmander", type: "fire", attack: 20})
 {:ok, bulbasaur} = Pokemon.new(%{name: "bulbasaur", type: "water", health: 100})
 
 charmander_server = PokemonServer.start(charmander)
-bulbasaur_server = PokemonServer.start(charmander)
-PokemonServer.attack(charmander, bulbasaur)
+bulbasaur_server = PokemonServer.start(bulbasaur)
+PokemonServer.attack(charmander_server, bulbasaur_server)
 
 PokemonServer.stats(bulbasaur_server)
-%Pokemon{name: "bulbasaur", type: "water", damage: 5, health: 90}
+%Pokemon{name: "bulbasaur", type: "water", attack: 5, health: 90}
 ```
 
 <!-- livebook:{"break_markdown":true} -->
@@ -191,7 +254,52 @@ Enter your answer in the Elixir cell below.
 
 ```elixir
 defmodule PokemonServer do
+  use GenServer
+  # ---------------------------------------------------------------------------------------------
+  def start_link(pokemon_struct) do
+    GenServer.start_link(__MODULE__, pokemon_struct)
+  end
+
+  def init(pokemon_struct) do
+    {:ok, pokemon_struct}
+  end
+
+  # --------------------------------------------------------------------------------------------
+
+  def stats(pokemon_pid) do
+    GenServer.call(pokemon_pid, :stats)
+  end
+
+  def start(pokemon) do
+    start_link(pokemon)
+  end
+
+  def attack(attacker, defender) do
+    # call(pid, message, timeout \\ 5000)
+    GenServer.call(attacker, {:attack, defender})
+  end
+
+  def handle_call(:stats, _from, state) do
+    {:reply, state, state}
+  end
+
+  def handle_call({:attack, defender}, _from, state) do
+    GenServer.call(defender, {:defend, state})
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:defend, attacker}, _from, state) do
+    new_state = Pokemon.attack(attacker, state)
+    {:reply, :ok, new_state}
+  end
 end
+
+{:ok, charmander} = Pokemon.new(%{name: "charmander", type: "fire", attack: 20})
+{:ok, bulbasaur} = Pokemon.new(%{name: "bulbasaur", type: "water", health: 100})
+{:ok, bulbasaur_server} = PokemonServer.start(bulbasaur)
+{:ok, charmander_server} = PokemonServer.start(charmander)
+PokemonServer.attack(charmander_server, bulbasaur_server)
+PokemonServer.stats(bulbasaur_server)
 ```
 
 ## Commit Your Progress

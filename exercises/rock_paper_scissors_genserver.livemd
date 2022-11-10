@@ -129,9 +129,137 @@ In the Elixir cell below, create the `Game` and `Player` GenServer modules.
 
 ```elixir
 defmodule Game do
+  use GenServer
+  # ---------------------------------------------------------------------------------------------
+  def start_link(_opts) do
+    GenServer.start_link(__MODULE__, [], _opts)
+  end
+
+  def init(_) do
+    %{round: 1, first_response: nil}
+    # %{round: 1, first_response: nil}
+    # %{round: 1, first_response: {pid, choice}}
+    # %{round: 2, first_response: nil}
+  end
+
+  # ---------------------------------------------------------------------------------------------
+  def choose(game_pid, player_pid, choice) do
+    GenServer.call(game_pid, {:choose, player_pid, choice})
+  end
+
+  def stats(game_pid) do
+    GenServer.call(game_pid, :stats)
+  end
+
+  def handle_call({:choose, player_pid, choice}, _from, %{first_response: nil} = state) do
+    first_response = {player_pid, choice}
+    new_state = %{state | first_response: first_response}
+    {:reply, :ok, new_state}
+  end
+
+  def handle_call(
+        {:choose, player_pid, choice},
+        _from,
+        %{first_response: {other_player_pid, other_choice}, round: round} = state
+      ) do
+    score({player_pid, choice}, {other_player_pid, other_choice})
+    {:reply, :ok, %{state | first_reponse: nil, round: round + 1}}
+  end
+
+  def handle_call(:stats, _from, state) do
+    {:reply, Map.take(state, [:round]), state}
+  end
+
+  defp score({pid1, choice}, {pid2, choice}) do
+    Player.tie(pid1)
+    Player.tie(pid2)
+  end
+
+  defp score({pid1, :rock}, {pid2, :paper}) do
+    Player.win(pid2)
+    Player.lose(pid1)
+  end
+
+  defp score({pid1, :rock}, {pid2, :scissors}) do
+    Player.tie(pid1)
+    Player.tie(pid2)
+  end
+
+  defp score({pid1, :paper}, {pid2, :rock}) do
+    Player.tie(pid1)
+    Player.tie(pid2)
+  end
+
+  defp score({pid1, :paper}, {pid2, :scissors}) do
+    Player.win(pid2)
+    Player.lose(pid1)
+  end
+
+  defp score({pid1, :scissors}, {pid2, :rock}) do
+    Player.win(pid2)
+    Player.lose(pid1)
+  end
+
+  defp score({pid1, :scissors}, {pid2, :paper}) do
+    Player.win(pid1)
+    Player.lose(pid2)
+  end
 end
 
 defmodule Player do
+  use GenServer
+  # ---------------------------------------------------------------------------------------------
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, [], opts)
+  end
+
+  def init(_) do
+    %{wins: 0, ties: 0, losses: 0}
+  end
+
+  # ---------------------------------------------------------------------------------------------
+  def new() do
+  end
+
+  def tie(pid) do
+    GenServer.call(pid, :tie)
+  end
+
+  def win(pid) do
+    GenServer.call(pid, :win)
+  end
+
+  def lose(pid) do
+    GenServer.call(pid, :lose)
+  end
+
+  def stats(pid) do
+    GenServer.call(pid, :stats)
+  end
+
+  def handle_call(:tie, _from, %{ties: ties} = state) do
+    {:reply, :ok, Map.put(state, :ties, ties + 1)}
+  end
+
+  def handle_call(:win, _from, %{wins: wins} = state) do
+    {:reply, :ok, Map.put(state, :wins, wins + 1)}
+  end
+
+  def handle_call(:lose, _from, %{losses: losses} = state) do
+    {:reply, :ok, Map.put(state, :losses, losses + 1)}
+  end
+
+  # @key_translation {win: :wins, :lose, :losses, tie: :ties}
+  # def handle_call(msg, _from, state) when msg in [:win, :lose, :tie] do
+  #   key = Map.get(@key_translation, msg)
+  #   current_value = Map.get(state, key)
+  #   new_state = Map.put(state, key, current_value + 1)
+  #   {:reply, :ok, new_state}
+  # end
+
+  def handle_call(:stats, _from, state) do
+    {:reply, state, state}
+  end
 end
 ```
 
