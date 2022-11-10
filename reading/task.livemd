@@ -227,7 +227,8 @@ In the Elixir cell below, spawn a task which takes one second to complete.
 `await/2` the task and alter the timeout value to be less than one second. Awaiting the task should crash.
 
 ```elixir
-
+mytask = Task.async(fn -> Process.sleep(1000) end)
+Task.await(mytask, 500)
 ```
 
 ### Further Reading
