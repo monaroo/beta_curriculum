@@ -122,7 +122,37 @@ GenServer.call(cache, {:get, :key1})
 ```elixir
 defmodule Cache do
   use GenServer
+
+  def start_link(_opts \\ []) do
+    cache = GenServer.start_link(__MODULE__, %{}, _opts)
+  end
+
+  def init(_) do
+    {:ok, %{}}
+  end
+
+  def set(cache, key, value) do
+    GenServer.call(cache, {:set, {key, value}})
+  end
+
+  def get(cache, key) do
+    GenServer.call(cache, {:get, key})
+  end
+
+  def handle_call({:set, {key, value}}, _from, cache) do
+    newmap = Map.put(cache, key, value)
+    {:reply, :ok, newmap}
+  end
+
+  def handle_call({:get, key}, _from, cache) do
+    mykey = Map.get(cache, key)
+    {:reply, cache, mykey}
+  end
 end
+
+{:ok, cache_pid} = Cache.start_link()
+Cache.set(cache_pid, :key2, "ur mom")
+Cache.get(cache_pid, {:get, :key2})
 ```
 
 ## Agent
@@ -252,7 +282,24 @@ Counter.increment(counter)
 ```elixir
 defmodule Counter do
   use Agent
+
+  def start_link(initial) do
+    Agent.start_link(fn -> initial end, name: __MODULE__)
+  end
+
+  def get() do
+    Agent.get(__MODULE__, fn number -> number end)
+  end
+
+  def increment() do
+    Agent.update(__MODULE__, fn number -> number + 1 end)
+  end
 end
+
+Counter.start_link(0)
+Counter.increment()
+Counter.increment()
+Counter.get()
 ```
 
 ### Further Reading
@@ -343,7 +390,10 @@ secret identities.
 ```
 
 ```elixir
-
+# :ets.new(:super_heros, [:named_table])
+:ets.insert(:super_heros, {"Spider Man", "Peter Parker"})
+[{hero_name, identity}] = :ets.lookup(:super_heros, "Spider Man")
+identity
 ```
 
 ### ETS Configuration
@@ -368,6 +418,7 @@ By default, `:ets` tables use the `:set` and `:protected` configuration values. 
 ```elixir
 default_table = :ets.new(:default_table, [:set, :protected])
 :ets.insert(default_table, {:key, "value"})
+:ets.insert(default_table, {:key2, "value2"})
 
 # We return the default table to display the table in livebook.
 default_table
@@ -378,9 +429,9 @@ With `:protected` access control, the `:ets` raises an [ArgumentError](https://h
 Uncomment and execute this code. Notice that the child process crashes.
 
 ```elixir
-# Task.start(fn ->
-#   :ets.insert(default_table, {:new_key, "new value"})
-# end)
+Task.start(fn ->
+  :ets.insert(default_table, {:new_key, "new value"})
+end)
 ```
 
 However, reading from other processes is allowed.
@@ -445,7 +496,11 @@ Demonstrate that the table will not allow read/write operations to the `:ets` ta
 from another process.
 
 ```elixir
+newtable = :ets.new(:newtable, [:ordered_set, :private])
 
+Task.start(fn ->
+  :ets.insert(newtable, {:key, "value"})
+end)
 ```
 
 ## Race Conditions

@@ -84,7 +84,7 @@ spawn(fn ->
 end)
 
 receive do
-  {:msg, value} -> value
+  {:msg, value} -> value <> " world"
 end
 ```
 
@@ -156,7 +156,15 @@ execution and parallel execution.
 You may consider using [Process.sleep/1](https://hexdocs.pm/elixir/Process.html#sleep/1) to simulate an expensive computation.
 
 ```elixir
+{microseconds, _result} =
+  :timer.tc(fn ->
+    first = Task.async(fn -> Process.sleep(3000) end)
+    second = Task.async(fn -> Process.sleep(1000) end)
+    Task.await(first)
+    Task.await(second)
+  end)
 
+microseconds / 1000 / 1000
 ```
 
 ## Awaiting Many Tasks
@@ -168,7 +176,7 @@ tasks =
   Enum.map(1..5, fn each ->
     Task.async(fn ->
       Process.sleep(1000)
-      each * 2
+      each * 80
     end)
   end)
 ```
