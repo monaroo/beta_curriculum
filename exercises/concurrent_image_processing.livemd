@@ -59,7 +59,8 @@ When complete, rather than taking `8` seconds to convert `4` files, it should ta
 defmodule MultiImage do
   # Optimize the function below using concurrency. Notice that it currently takes 8 seconds to run.
   def convert(files) do
-    Enum.map(files, &Image.convert/1)
+    tasks = Enum.map(files, fn each -> Task.async(fn -> Image.convert(each) end) end)
+    Task.await_many(tasks)
   end
 end
 
