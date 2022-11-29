@@ -50,14 +50,29 @@ Enter your solution in the Elixir cell below.
 ```elixir
 defmodule Warehouse do
   def start do
+    :ets.new(:warehouse, [:set, :protected])
   end
 
-  def store(pid, item, quantity) do
+  def store(warehouse, item, quantity) do
+    case :ets.lookup(warehouse, item) do
+      [] ->
+        :ets.insert(warehouse, {item, quantity})
+
+      list ->
+        newquantity = elem(List.first(list), 1) + quantity
+        :ets.insert(warehouse, {item, newquantity})
+    end
   end
 
-  def quantity(pid, item) do
+  def quantity(warehouse, item) do
+    :ets.lookup(warehouse, item)
   end
 end
+
+pid = Warehouse.start()
+Warehouse.store(pid, :apples, 5)
+Warehouse.store(pid, :apples, 10)
+Warehouse.quantity(pid, :apples)
 ```
 
 ## Commit Your Progress
