@@ -124,7 +124,7 @@ defmodule Cache do
   use GenServer
 
   def start_link(_opts \\ []) do
-    cache = GenServer.start_link(__MODULE__, %{}, _opts)
+    GenServer.start_link(__MODULE__, %{}, _opts)
   end
 
   def init(_) do

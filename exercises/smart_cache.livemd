@@ -49,9 +49,29 @@ Ensure that you smart cache values as they are computed, rather than pre-caching
 
 ```elixir
 defmodule FibCache do
+  use Agent
+
+  def start_link() do
+    Agent.start_link(fn -> %{1 => 0, 2 => 1} end, name: :fib)
+  end
+
   def of(n) do
+    case Agent.get(:fib, fn cache -> Map.get(cache, n) end) do
+      nil ->
+        a = of(n - 1)
+        b = of(n - 2)
+        answer = a + b
+        Agent.update(:fib, fn cache -> Map.put(cache, n, answer) end)
+        answer
+
+      answer ->
+        answer
+    end
   end
 end
+
+FibCache.start_link()
+FibCache.of(9)
 ```
 
 ## Commit Your Progress
