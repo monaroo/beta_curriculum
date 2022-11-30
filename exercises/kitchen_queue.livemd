@@ -45,21 +45,33 @@ You may need to start a named process before calling the `Kitchen` module.
 
 ```elixir
 defmodule Kitchen do
+  use Agent
+
+  def start_link() do
+    Agent.start_link(fn -> [] end, name: :newqueue)
+  end
+
   def request(item) do
+    Agent.update(:newqueue, fn queue -> List.insert_at(queue, 0, item) end)
   end
 
   def prepare() do
+    item = Agent.get(:newqueue, fn queue -> List.last(queue) end)
+    Agent.update(:newqueue, fn queue -> List.delete(queue, item) end)
+    item
   end
 end
+
+Kitchen.start_link()
 ```
 
 Test your solution by uncommenting and executing the code below.
 
 ```elixir
-# Kitchen.request("burger with fries")
-# Kitchen.request("caesar salad")
-# "burger with fries" = Kitchen.prepare()
-# "caesar salad" = Kitchen.prepare()
+Kitchen.request("burger with fries")
+Kitchen.request("caesar salad")
+Kitchen.prepare()
+Kitchen.prepare()
 ```
 
 ## Kitchen Stock Application
@@ -91,22 +103,44 @@ You may need to start a named process before calling the `Stock` module.
 Enter your solution below.
 
 ```elixir
+:ets.delete(:stock)
+:ets.new(:stock, [:named_table, :bag])
+```
+
+```elixir
 defmodule Stock do
-  def store(item) do
+  def init() do
+    :ets.delete(:stock)
+    :ets.new(:stock, [:bag, :named_table])
+  end
+
+  def store(%{name: name, id: id}) do
+    :ets.insert(:stock, {name, id})
   end
 
   def retrieve(item_name) do
+    item =
+      {name, id} =
+      :ets.lookup(:stock, item_name)
+      |> Enum.sort_by(fn {_name, id} -> id end)
+      |> List.first()
+
+    :ets.delete_object(:stock, item)
+    %{name: name, id: id}
   end
 end
+
+Stock.init()
 ```
 
 Test your solution by uncommenting and executing the code below.
 
 ```elixir
-# Stock.store(%{name: :carton_of_eggs, id: 1})
-# Stock.store(%{name: :carton_of_eggs, id: 2})
-# %{name: :carton_of_eggs, id: 1} = Stock.retrieve(:carton_of_eggs)
-# %{name: :carton_of_eggs, id: 2} = Stock.retrieve(:carton_of_eggs)
+Stock.store(%{name: :carton_of_eggs, id: 2})
+Stock.store(%{name: :carton_of_eggs, id: 1})
+
+%{name: :carton_of_eggs, id: 1} = Stock.retrieve(:carton_of_eggs) |> IO.inspect()
+%{name: :carton_of_eggs, id: 2} = Stock.retrieve(:carton_of_eggs) |> IO.inspect()
 ```
 
 ## Commit Your Progress
