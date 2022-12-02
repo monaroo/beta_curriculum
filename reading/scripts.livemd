@@ -39,6 +39,10 @@ $ elixir script.ex
 Hello, world!
 ```
 
+```elixir
+
+```
+
 ## IO Module
 
 We can leverage the built-in [IO](https://hexdocs.pm/elixir/IO.html) module to
