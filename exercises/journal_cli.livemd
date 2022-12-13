@@ -108,6 +108,11 @@ Pass in arguments to see them in the list.
 ["argument1", "argument2", "--switch"]
 ```
 
+```elixir
+date = Date.utc_today()
+"#{date.year}-#{date.month}-#{date.day}"
+```
+
 ## Create A Daily Journal
 
 With no arguments provided, the `./journal` command should create a markdown file `yyyy-mm-dd.md` in an `entries/` folder.

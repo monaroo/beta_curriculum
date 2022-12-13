@@ -361,6 +361,66 @@ defmodule Assertion.Test do
     right: #{right}
     """)
   end
+
+  def assert(:<, left, right) when left < right do
+    IO.puts("Success!")
+  end
+
+  def assert(:<, left, right) do
+    IO.puts("""
+    Assertion with < failed. 
+    left: #{left}
+    right: #{right}
+    """)
+  end
+
+  def assert(:<=, left, right) when left <= right do
+    IO.puts("Success!")
+  end
+
+  def assert(:<=, left, right) do
+    IO.puts("""
+    Assertion with <= failed. 
+    left: #{left}
+    right: #{right}
+    """)
+  end
+
+  def assert(:>, left, right) when left > right do
+    IO.puts("Success!")
+  end
+
+  def assert(:>, left, right) do
+    IO.puts("""
+    Assertion with > failed. 
+    left: #{left}
+    right: #{right}
+    """)
+  end
+
+  def assert(:>=, left, right) when left >= right do
+    IO.puts("Success!")
+  end
+
+  def assert(:>=, left, right) do
+    IO.puts("""
+    Assertion with >= failed. 
+    left: #{left}
+    right: #{right}
+    """)
+  end
+
+  def assert(:===, left, right) when left === right do
+    IO.puts("Success!")
+  end
+
+  def assert(:===, left, right) do
+    IO.puts("""
+    Assertion with === failed. 
+    left: #{left}
+    right: #{right}
+    """)
+  end
 end
 
 defmodule Assertion do
@@ -484,9 +544,21 @@ Create a `Usage` module that uses the `use` keyword to call the `__using__` macr
 
 ```elixir
 defmodule Greetings do
+  defmacro __using__(_opts) do
+    quote do
+      def hi do
+        "hello"
+      end
+    end
+  end
 end
 
 defmodule Usage do
+  use Greetings
+
+  def hello do
+    hi() <> " world"
+  end
 end
 ```
 
@@ -494,6 +566,84 @@ Call `Usage.hello()` to ensure your solution works correctly.
 
 ```elixir
 Usage.hello()
+```
+
+```elixir
+defmodule PigLatin do
+  defmacro __using__(_opts) do
+    quote do
+      def translate(input) do
+        word = String.downcase(input)
+
+        cond do
+          String.length(word) <= 2 ->
+            word
+
+          String.starts_with?(word, ["a", "e", "i", "o", "u"]) ->
+            first = String.slice(String.downcase(word), 0, 1)
+            mid = String.slice(word, 1, String.length(word))
+            mid <> first <> "hay"
+
+          String.starts_with?(word, [
+            "ch",
+            "cl",
+            "cr",
+            "br",
+            "bl",
+            "dr",
+            "fl",
+            "fr",
+            "gr",
+            "gl",
+            "pl",
+            "pr",
+            "ph",
+            "st",
+            "sl",
+            "sc",
+            "sp",
+            "sh",
+            "sk",
+            "tr",
+            "th",
+            "wr",
+            "wh",
+            "qu"
+          ]) ->
+            first = String.slice(word, 0, 2)
+            mid = String.slice(word, 2, String.length(word))
+            mid <> first <> "ay"
+
+          String.starts_with?(word, ["str", "spr", "scl", "scr", "squ"]) ->
+            first = String.slice(String.downcase(word), 0, 3)
+            mid = String.slice(word, 3, String.length(word))
+            mid <> first <> "ay"
+
+          true ->
+            first = String.slice(word, 0, 1)
+            mid = String.slice(word, 1, String.length(word))
+            mid <> first <> "ay"
+        end
+      end
+    end
+  end
+end
+
+defmodule Usage do
+  use PigLatin
+
+  def random_word() do
+    translate(
+      Enum.random(["silly", "goose", "arithmetic", "grape", "ham", "asparagus", "spider"])
+    )
+  end
+
+  def custom_word(word) do
+    translate(word)
+  end
+end
+
+Usage.custom_word("Grandma")
 ```
 
 ## Commit Your Progress

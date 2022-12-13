@@ -371,6 +371,27 @@ Notice we can omit the `do` block to make a `"Not implemented"` test.
 
 ```elixir
 defmodule Math do
+  def add(num1, num2)
+      when (is_integer(num1) and is_integer(num2)) or
+             (is_float(num1) and is_float(num2)) do
+    num1 + num2
+  end
+
+  def add(string1, string2) when is_binary(string1) and is_binary(string2) do
+    string1 <> string2
+  end
+
+  def add(list1, list2) when is_list(list1) and is_list(list2) do
+    if Enum.all?(list1, &match?({_key, _}, &1)) && Enum.all?(list2, &match?({_key, _}, &1)) do
+      Keyword.merge(list1, list2, fn _k, v1, v2 -> v1 + v2 end)
+    else
+      list1 ++ list2
+    end
+  end
+
+  def add(map1, map2) when is_map(map1) and is_map(map2) do
+    Map.merge(map1, map2, fn _k, v1, v2 -> v1 + v2 end)
+  end
 end
 
 ExUnit.start(auto_run: false)
@@ -382,11 +403,92 @@ defmodule MathTest do
     assert Math.add(1, 1) === 2
   end
 
-  test "add/2 floats"
-  test "add/2 strings"
-  test "add/2 lists"
-  test "add/2 maps"
-  test "add/2 keyword lists"
+  test "add/2 floats" do
+    assert Math.add(1.0, 1.0) === 2.0
+  end
+
+  test "add/2 strings" do
+    assert Math.add("hello ", "world") === "hello world"
+  end
+
+  test "add/2 lists" do
+    assert Math.add([1, 2], [3, 4]) === [1, 2] ++ [3, 4]
+  end
+
+  test "add/2 maps" do
+    assert Math.add(%{a: 1}, %{b: 2}) === Map.merge(%{a: 1}, %{b: 2})
+  end
+
+  test "add/2 keyword lists" do
+    assert Math.add([a: 1], a: 2) === [a: 3]
+  end
+end
+
+ExUnit.run()
+```
+
+```elixir
+defprotocol Math do
+  def add(a, b)
+end
+
+defimpl Math, for: [Integer, Float] do
+  def add(a, b) do
+    a + b
+  end
+end
+
+defimpl Math, for: BitString do
+  def add(a, b) do
+    a <> b
+  end
+end
+
+defimpl Math, for: List do
+  def add(a, b) do
+    if Enum.all?(a, &match?({_key, _}, &1)) && Enum.all?(b, &match?({_key, _}, &1)) do
+      Keyword.merge(a, b, fn _k, v1, v2 -> v1 + v2 end)
+    else
+      a ++ b
+    end
+  end
+end
+
+defimpl Math, for: Map do
+  def add(a, b) do
+    Map.merge(a, b, fn _k, v1, v2 -> v1 + v2 end)
+  end
+end
+
+# defimpl Math, for: 
+ExUnit.start(auto_run: false)
+
+defmodule MathTest do
+  use ExUnit.Case
+
+  test "add/2 integers" do
+    assert Math.add(1, 1) === 2
+  end
+
+  test "add/2 floats" do
+    assert Math.add(1.0, 1.0) === 2.0
+  end
+
+  test "add/2 strings" do
+    assert Math.add("hello ", "world") === "hello world"
+  end
+
+  test "add/2 lists" do
+    assert Math.add([1, 2], [3, 4]) === [1, 2] ++ [3, 4]
+  end
+
+  test "add/2 maps" do
+    assert Math.add(%{a: 1}, %{b: 2}) === Map.merge(%{a: 1}, %{b: 2})
+  end
+
+  test "add/2 keyword lists" do
+    assert Math.add([a: 1], a: 2) === [a: 3]
+  end
 end
 
 ExUnit.run()
@@ -626,6 +728,51 @@ In addition, add your previous happy-path test cases for the `Math.add/2` functi
 
 ```elixir
 defmodule Math do
+  def add(num1, num2)
+      when (is_integer(num1) and is_integer(num2)) or
+             (is_float(num1) and is_float(num2)) do
+    num1 + num2
+  end
+
+  def add(string1, string2) when is_binary(string1) and is_binary(string2) do
+    string1 <> string2
+  end
+
+  def add(list1, list2) when is_list(list1) and is_list(list2) do
+    if Enum.all?(list1, &match?({_key, _}, &1)) && Enum.all?(list2, &match?({_key, _}, &1)) do
+      Keyword.merge(list1, list2, fn _k, v1, v2 -> v1 + v2 end)
+    else
+      list1 ++ list2
+    end
+  end
+
+  def add(map1, map2) when is_map(map1) and is_map(map2) do
+    Map.merge(map1, map2, fn _k, v1, v2 -> v1 + v2 end)
+  end
+
+  def subtract(num1, num2)
+      when (is_integer(num1) and is_integer(num2)) or
+             (is_float(num1) and is_float(num2)) do
+    num1 - num2
+  end
+
+  def subtract(str1, str2) when is_bitstring(str1) and is_bitstring(str2) do
+    String.replace(str1, str2, "", trim: true)
+  end
+
+  def subtract(list1, list2) when is_list(list1) and is_list(list2) do
+    if Keyword.keyword?(list1) and Keyword.keyword?(list2) do
+      keys = Keyword.keys(list2)
+      Keyword.drop(list1, keys)
+    else
+      list1 -- list2
+    end
+  end
+
+  def subtract(map1, map2) when is_map(map1) and is_map(map2) do
+    keys = Map.keys(map2)
+    Map.drop(map1, keys)
+  end
 end
 
 ExUnit.start(auto_run: false)
@@ -634,21 +781,172 @@ defmodule MathTest do
   use ExUnit.Case
 
   describe "Math.add/2" do
-    test "integers"
-    test "floats"
-    test "strings"
-    test "lists"
-    test "maps"
-    test "keyword lists"
+    test "integers" do
+      assert Math.add(1, 4) === 5
+    end
+
+    test "floats" do
+      assert Math.add(1.2, 5.7) === 6.9
+    end
+
+    test "strings" do
+      assert Math.add("hi ", "there") === "hi there"
+    end
+
+    test "lists" do
+      assert Math.add([1, 4], [5, 8]) === [1, 4, 5, 8]
+    end
+
+    test "maps" do
+      assert Math.add(%{map1: 1}, %{map2: 2}) === %{map1: 1, map2: 2}
+    end
+
+    test "keyword lists" do
+      assert Math.add([list1: 1], list2: 2) === [list1: 1, list2: 2]
+    end
   end
 
   describe "Math.subtract/2" do
-    test "integers"
-    test "floats"
-    test "strings"
-    test "lists"
-    test "maps"
-    test "keyword lists"
+    test "integers" do
+      assert Math.subtract(4, 3) === 1
+    end
+
+    test "floats" do
+      assert Math.subtract(5.0, 4.0) === 1.0
+    end
+
+    test "strings" do
+      assert Math.subtract("ab", "a") === "b"
+    end
+
+    test "lists" do
+      assert Math.subtract([1, 4, 5, 8], [5, 8]) === [1, 4]
+    end
+
+    test "maps" do
+      assert Math.subtract(%{map1: 1, map2: 2}, %{map2: 2}) === %{map1: 1}
+    end
+
+    test "keyword lists" do
+      assert Math.subtract([list1: 1, list2: 2], list2: 2) === [list1: 1]
+    end
+  end
+end
+
+ExUnit.run()
+```
+
+```elixir
+defprotocol Math do
+  def add(a, b)
+  def subtract(a, b)
+end
+
+defimpl Math, for: [Integer, Float] do
+  def add(a, b) do
+    a + b
+  end
+
+  def subtract(a, b) do
+    a - b
+  end
+end
+
+defimpl Math, for: BitString do
+  def add(a, b) do
+    a <> b
+  end
+
+  def subtract(a, b) do
+    String.replace(a, b, "", trim: true)
+  end
+end
+
+defimpl Math, for: List do
+  def add(a, b) do
+    if Enum.all?(a, &match?({_key, _}, &1)) && Enum.all?(b, &match?({_key, _}, &1)) do
+      Keyword.merge(a, b, fn _k, v1, v2 -> v1 + v2 end)
+    else
+      a ++ b
+    end
+  end
+
+  def subtract(a, b) do
+    if Keyword.keyword?(a) and Keyword.keyword?(b) do
+      keys = Keyword.keys(b)
+      Keyword.drop(a, keys)
+    else
+      a -- b
+    end
+  end
+end
+
+defimpl Math, for: Map do
+  def add(a, b) do
+    Map.merge(a, b, fn _k, v1, v2 -> v1 + v2 end)
+  end
+
+  def subtract(a, b) do
+    keys = Map.keys(b)
+    Map.drop(a, keys)
+  end
+end
+
+ExUnit.start(auto_run: false)
+
+defmodule MathTest do
+  use ExUnit.Case
+
+  describe "Math.add/2" do
+    test "integers" do
+      assert Math.add(1, 4) === 5
+    end
+
+    test "floats" do
+      assert Math.add(1.2, 5.7) === 6.9
+    end
+
+    test "strings" do
+      assert Math.add("hi ", "there") === "hi there"
+    end
+
+    test "lists" do
+      assert Math.add([1, 4], [5, 8]) === [1, 4, 5, 8]
+    end
+
+    test "maps" do
+      assert Math.add(%{map1: 1}, %{map2: 2}) === %{map1: 1, map2: 2}
+    end
+
+    test "keyword lists" do
+      assert Math.add([list1: 1], list2: 2) === [list1: 1, list2: 2]
+    end
+  end
+
+  describe "Math.subtract/2" do
+    test "integers" do
+      assert Math.subtract(4, 3) === 1
+    end
+
+    test "floats" do
+      assert Math.subtract(5.0, 4.0) === 1.0
+    end
+
+    test "strings" do
+      assert Math.subtract("ab", "a") === "b"
+    end
+
+    test "lists" do
+      assert Math.subtract([1, 4, 5, 8], [5, 8]) === [1, 4]
+    end
+
+    test "maps" do
+      assert Math.subtract(%{map1: 1, map2: 2}, %{map2: 2}) === %{map1: 1}
+    end
+
+    test "keyword lists" do
+      assert Math.subtract([list1: 1, list2: 2], list2: 2) === [list1: 1]
+    end
   end
 end
 
@@ -819,10 +1117,11 @@ Feel free to write your own `configure/1` function to experiment with configurat
 ```elixir
 ExUnit.start(auto_run: false)
 
-ExUnit.configure(exclude: :my_module_tag, include: :my_descibe_tag, include: :my_tag)
+# ExUnit.configure(exclude: :my_module_tag, include: :my_descibe_tag, include: :my_tag)
 # ExUnit.configure(exclude: :my_descibe_tag, exclude: :my_tag)
 # ExUnit.configure(only: :my_descibe_tag)
 # ExUnit.configure(only: :my_tag)
+ExUnit.configure(exclude: :my_descibe_tag, include: :new_tag)
 
 defmodule TagTest do
   use ExUnit.Case
@@ -843,6 +1142,11 @@ defmodule TagTest do
   @tag :my_tag
   test "failing test" do
     assert false
+  end
+
+  @tag :new_tag
+  test "testing" do
+    refute false
   end
 end
 

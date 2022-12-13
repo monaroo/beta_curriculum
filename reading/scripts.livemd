@@ -40,7 +40,16 @@ Hello, world!
 ```
 
 ```elixir
+defmodule Snowman do
+  def guess do
+    # player_guess = IO.gets("Guess a letter.")
+    Enum.random(["snowball", "boots", "carrot", "scarf"])
+    |> String.to_charlist()
+    |> Enum.count()
+  end
+end
 
+Snowman.guess()
 ```
 
 ## IO Module
