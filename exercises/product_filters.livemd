@@ -78,7 +78,44 @@ Ensure you include at least one test for each filter, and one test which combine
 
 ```elixir
 defmodule Products do
+  def filter_by_name(products, nil) do
+    products
+  end
+
+  def filter_by_name(products, name) do
+    Enum.filter(products, fn p -> p.name =~ ~r/#{name}/i end)
+  end
+
+  def filter_by_category(products, nil) do
+    products
+  end
+
+  def filter_by_category(products, category) do
+    Enum.filter(products, fn x -> x.category == category end)
+  end
+
+  def filter_min_price(products, nil) do
+    products
+  end
+
+  def filter_min_price(products, min) do
+    Enum.filter(products, fn x -> x.price >= min end)
+  end
+
+  def filter_max_price(products, nil) do
+    products
+  end
+
+  def filter_max_price(products, max) do
+    Enum.filter(products, fn x -> x.price <= max end)
+  end
+
   def filter(products, filters) do
+    products
+    |> filter_by_name(Keyword.get(filters, :name))
+    |> filter_by_category(Keyword.get(filters, :category))
+    |> filter_min_price(Keyword.get(filters, :min))
+    |> filter_max_price(Keyword.get(filters, :max))
   end
 end
 
@@ -86,6 +123,64 @@ ExUnit.start(auto_run: false)
 
 defmodule ProductTests do
   use ExUnit.Case
+
+  test "tests name filter" do
+    products = [
+      %{name: "Laptop", category: :tech, price: 100_000},
+      %{name: "Phone", category: :tech, price: 50000},
+      %{name: "Chocolate", category: :snacks, price: 200},
+      %{name: "Shampoo", category: :health, price: 1000}
+    ]
+
+    assert Products.filter(products, name: "c") ===
+             [%{name: "Chocolate", category: :snacks, price: 200}]
+  end
+
+  test "tests category filter" do
+    products = [
+      %{name: "Laptop", category: :tech, price: 100_000},
+      %{name: "Phone", category: :tech, price: 50000},
+      %{name: "Chocolate", category: :snacks, price: 200},
+      %{name: "Shampoo", category: :health, price: 1000}
+    ]
+
+    assert Products.filter(products, category: :tech) ===
+             [
+               %{name: "Laptop", category: :tech, price: 100_000},
+               %{name: "Phone", category: :tech, price: 50000}
+             ]
+  end
+
+  test "tests price filter" do
+    products = [
+      %{name: "Laptop", category: :tech, price: 100_000},
+      %{name: "Phone", category: :tech, price: 50000},
+      %{name: "Chocolate", category: :snacks, price: 200},
+      %{name: "Shampoo", category: :health, price: 1000}
+    ]
+
+    assert Products.filter(products, min: 0, max: 50000) ===
+             [
+               %{name: "Phone", category: :tech, price: 50000},
+               %{name: "Chocolate", category: :snacks, price: 200},
+               %{name: "Shampoo", category: :health, price: 1000}
+             ]
+  end
+
+  test "tests all filters" do
+    products = [
+      %{name: "Laptop", category: :tech, price: 100_000},
+      %{name: "Phone", category: :tech, price: 50000},
+      %{name: "Chocolate", category: :snacks, price: 200},
+      %{name: "Shampoo", category: :health, price: 1000}
+    ]
+
+    assert Products.filter(products, name: "o", category: :tech, min: 0, max: 500_000) ===
+             [
+               %{name: "Laptop", category: :tech, price: 100_000},
+               %{name: "Phone", category: :tech, price: 50000}
+             ]
+  end
 end
 
 ExUnit.run()
