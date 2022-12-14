@@ -39,10 +39,53 @@ and the `pop/1` function.
 ```elixir
 defmodule Stack do
   use GenServer
+
+  def start_link(_opts) do
+    GenServer.start_link(__MODULE__, [])
+  end
+
+  def init(state) do
+    {:ok, state}
+  end
+
+  def push(pid, atom) do
+    GenServer.call(pid, {:push, atom})
+  end
+
+  def pop(pid) do
+    GenServer.call(pid, :pop)
+  end
+
+  def handle_call({:push, atom}, _, state) do
+    {:reply, [atom | state], [atom | state]}
+  end
+
+  def handle_call(:pop, _, [head | tail]) do
+    {:reply, head, tail}
+  end
+
+  def handle_call(:pop, _, []) do
+    {:reply, [], []}
+  end
 end
 
 defmodule StackTests do
+  ExUnit.start(auto_run: false)
   use ExUnit.Case
+
+  test "Stack.push/2" do
+    {:ok, pid} = Stack.start_link([])
+    assert Stack.push(pid, :hello) == [:hello]
+  end
+
+  test "Stack.pop/1" do
+    {:ok, pid} = Stack.start_link([])
+    Stack.push(pid, :first)
+    Stack.push(pid, :second)
+    assert Stack.pop(pid) == :second
+  end
+
+  ExUnit.run()
 end
 ```
 
