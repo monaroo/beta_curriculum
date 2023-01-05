@@ -313,7 +313,16 @@ Change the order to:
 Predict the crash timeline, Then evaluate your code. Did the result match your prediction?
 
 ```elixir
+children = [
+  {Bomb2, []},
+  {Bomb3, []},
+  {Bomb1, []}
+]
 
+{:ok, supervisor} = Supervisor.start_link(children, strategy: :rest_for_one, max_restarts: 3)
+
+Process.sleep(5000)
+Process.exit(supervisor, :normal)
 ```
 
 ## Further Reading

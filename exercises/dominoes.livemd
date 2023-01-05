@@ -46,7 +46,7 @@ defmodule Domino1 do
   end
 
   def handle_info(:fall, _state) do
-    raise "Domino1 falls"
+    raise "Domino 1 falls"
   end
 end
 ```
@@ -65,7 +65,56 @@ Use the <code>:rest_for_one</code> strategy for your supervisor.
 </details>
 
 ```elixir
+defmodule Domino2 do
+  use GenServer
 
+  def start_link(state) do
+    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+  end
+
+  def init(state) do
+    {:ok, state}
+  end
+
+  def handle_info(:fall, _state) do
+    raise "Domino 2 falls"
+  end
+end
+
+defmodule Domino3 do
+  use GenServer
+
+  def start_link(state) do
+    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+  end
+
+  def init(state) do
+    {:ok, state}
+  end
+
+  def handle_info(:fall, _state) do
+    raise "Domino 3 falls"
+  end
+end
+
+children = [
+  {Domino1, []},
+  {Domino2, []},
+  {Domino3, []}
+]
+
+{:ok, pid} = Supervisor.start_link(children, strategy: :rest_for_one)
+```
+
+```elixir
+Supervisor.which_children(pid)
+```
+
+```elixir
+Supervisor.which_children(pid)
+|> Enum.at(1)
+|> elem(1)
+|> Process.send(:fall, [])
 ```
 
 ## Commit Your Progress

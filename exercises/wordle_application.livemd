@@ -74,6 +74,241 @@ iex> Wordle.guess(game, "")
 
 If a player guesses more than 6 times, the game should end with them losing.
 
+```elixir
+defmodule Wordle do
+  @words [
+    "abuse",
+    "adult",
+    "agent",
+    "anger",
+    "apple",
+    "award",
+    "basis",
+    "beach",
+    "birth",
+    "block",
+    "blood",
+    "board",
+    "brain",
+    "bread",
+    "break",
+    "brown",
+    "buyer",
+    "cause",
+    "chain",
+    "chair",
+    "chest",
+    "chief",
+    "child",
+    "china",
+    "claim",
+    "class",
+    "clock",
+    "coach",
+    "coast",
+    "court",
+    "cover",
+    "cream",
+    "crime",
+    "cross",
+    "crowd",
+    "crown",
+    "cycle",
+    "dance",
+    "death",
+    "depth",
+    "doubt",
+    "draft",
+    "drama",
+    "dream",
+    "dress",
+    "drink",
+    "drive",
+    "earth",
+    "enemy",
+    "entry"
+  ]
+
+  def guess do
+    guess(%{
+      # |> String.split("", trim: true),
+      secret_word: @words |> Enum.random(),
+      guesses: []
+    })
+  end
+
+  def guess(%{} = state) do
+    cond do
+      won?(state) ->
+        IO.puts("you won!")
+
+      lost?(state) ->
+        IO.puts("you lost! the word was: #{state.secret_word}")
+
+      :otherwise ->
+        render(state)
+        next_guess = accept_input()
+        guess(%{state | guesses: [next_guess | state.guesses]})
+    end
+  end
+
+  defp break(string) do
+    a = [:one, :two, :three, :four, :five]
+    b = String.split(string, "", trim: true)
+    List.zip([a, b])
+  end
+
+  def yellow(str1, str2) do
+    a = String.split(str1, "", trim: true)
+    b = String.split(str2, "", trim: true)
+
+    Enum.map(a, fn each -> Enum.member?(b, each) end)
+    |> Enum.map(fn x ->
+      if x == true do
+        "Y"
+      else
+        "_"
+      end
+    end)
+    |> Enum.join()
+  end
+
+  def green(str1, str2) do
+    a = break(str1)
+    b = break(str2)
+
+    Keyword.merge(a, b, fn _k, v1, v2 ->
+      if v1 == v2 do
+        "G"
+      else
+        "_"
+      end
+    end)
+    |> Keyword.values()
+    |> Enum.join()
+  end
+
+  def both(str1, str2) do
+    y = yellow(str1, str2)
+    g = green(str1, str2)
+    a = break(y)
+    b = break(g)
+
+    Keyword.merge(a, b, fn _k, v1, v2 ->
+      cond do
+        v2 == "G" && v1 == "Y" ->
+          "G"
+
+        v2 == "_" && v1 == "Y" ->
+          "Y"
+
+        true ->
+          "_"
+      end
+    end)
+    |> Keyword.values()
+    |> Enum.join(" ")
+  end
+
+  def cap(string) do
+    string
+    |> String.upcase()
+    |> String.split("", trim: true)
+    |> Enum.join(" ")
+  end
+
+  def render(%{} = state) do
+    last_guess = List.first(state.guesses)
+
+    IO.puts(cap(last_guess), both(last_guess, state.secret_word))
+  end
+
+  def accept_input do
+    IO.gets("guess a 5-letter word. >")
+  end
+
+  def won?(%{} = state) do
+    both(cap(accept_input()), state.secret_word) == "G G G G G"
+  end
+
+  def lost?(%{} = state) do
+    incorrect_guesses =
+      state.guesses
+      |> Enum.reject(fn _each ->
+        both(cap(accept_input()), state.secret_word) == "G G G G G"
+      end)
+
+    Enum.count(incorrect_guesses) > 6
+  end
+end
+
+Wordle.guess()
+```
+
+```elixir
+defmodule MyMod do
+  def break(string) do
+    a = [:one, :two, :three, :four, :five]
+    b = String.split(string, "", trim: true)
+    List.zip([a, b])
+  end
+
+  def yellow(str1, str2) do
+    a = String.split(str1, "", trim: true)
+    b = String.split(str2, "", trim: true)
+
+    Enum.map(a, fn each -> Enum.member?(b, each) end)
+    |> Enum.map(fn x ->
+      if x == true do
+        "Y"
+      else
+        "_"
+      end
+    end)
+    |> Enum.join()
+  end
+
+  def green(str1, str2) do
+    a = break(str1)
+    b = break(str2)
+
+    Keyword.merge(a, b, fn _k, v1, v2 ->
+      if v1 == v2 do
+        "G"
+      else
+        "_"
+      end
+    end)
+    |> Keyword.values()
+    |> Enum.join()
+  end
+
+  def both(str1, str2) do
+    y = yellow(str1, str2)
+    g = green(str1, str2)
+    a = break(y)
+    b = break(g)
+
+    Keyword.merge(a, b, fn _k, v1, v2 ->
+      cond do
+        v2 == "G" && v1 == "Y" ->
+          "G"
+
+        v2 == "_" && v1 == "Y" ->
+          "Y"
+
+        true ->
+          "_"
+      end
+    end)
+    |> Keyword.values()
+    |> Enum.join(" ")
+  end
+end
+
+MyMod.both("holly", "world")
+```
+
 ## Test Cases
 
 Cover the following test cases and ensure your code passes the tests.
