@@ -57,16 +57,51 @@ flowchart
 Enter your solution below.
 
 ```elixir
-defmodule Creature1 do
-end
+defmodule Creature do
+  use GenServer
 
-defmodule Creature2 do
-end
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, %{health: 100}, opts)
+  end
 
-defmodule Creature3 do
+  def init(state) do
+    {:ok, %{health: 100}}
+  end
+
+  def damage(pid, damage) do
+    GenServer.call(pid, {:damage, damage})
+  end
+
+  def handle_call({:damage, damage}, _from, state) do
+    new_state = %{state | health: state.health - damage}
+
+    if new_state.health == 0 do
+      raise "DED"
+    end
+
+    {:reply, :ok, new_state}
+  end
 end
 
 # start the creatures under a supervisor below:
+children = [
+  Supervisor.child_spec({Creature, [name: :Creature1]}, id: :creature1),
+  Supervisor.child_spec({Creature, [name: :Creature2]}, id: :creature2),
+  Supervisor.child_spec({Creature, [name: :Creature3]}, id: :creature3)
+]
+
+{:ok, pid} = Supervisor.start_link(children, strategy: :one_for_one)
+```
+
+```elixir
+Supervisor.which_children(pid)
+```
+
+```elixir
+Supervisor.which_children(pid)
+|> List.first()
+|> elem(1)
+|> Creature.damage(90)
 ```
 
 ### Bonus: Hero
