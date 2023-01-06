@@ -272,7 +272,7 @@ The `>` selects all elements with the `.child` class that are direct children of
 
 ### Descendents
 
-We select can all descendants of an element using a space between selectors.
+We can select all descendants of an element using a space between selectors.
 
 ```css
 .parent .child {

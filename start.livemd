@@ -296,7 +296,7 @@ livebook server start.livemd
   * [Relational Database Management Systems](reading/rdbms.livemd)
   * [Ecto](reading/ecto.livemd)
 * Exercises
-  * [SQL Queries](exercises/sql_queries.livemd)
+  * [SQL Drills](exercises/sql_drills.livemd)
   * [Rock Paper Scissors DB](exercises/rps_db.livemd)
 
 <!-- livebook:{"break_markdown":true} -->
