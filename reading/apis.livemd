@@ -6,7 +6,9 @@ Mix.install([
   {:hidden_cell, github: "brooklinjazz/hidden_cell"},
   {:tested_cell, github: "brooklinjazz/tested_cell"},
   {:utils, path: "#{__DIR__}/../utils"},
-  {:httpoison, "~> 1.8"}
+  {:httpoison, "~> 1.8"},
+  {:kino, "~> 0.7.0", override: true},
+  {:poison, "~> 5.0.0"}
 ])
 ```
 
@@ -166,6 +168,7 @@ Use [Poison.decode!/2](https://hexdocs.pm/poison/Poison.html#decode!/2) to decod
 
 ```elixir
 string = "{\"hello\"\: \"world\"}"
+Poison.decode!(string)
 ```
 
 ### HTTP GET and HTTP POST
@@ -224,9 +227,9 @@ Create a free account on the [Open Weather API](https://openweathermap.org/) and
 Use your API key and valid latitude/longitude coordinates to make a successful request to their API. Ensure the `:status_code` is `200` rather than `401`.
 
 ```elixir
-lat = 35
-lon = 139
-api_key = ""
+lat = 39.527974016890184
+lon = -104.78884782424261
+api_key = "04e6ea782718fe2d7d20c24aebeaf2ca"
 
 {:ok, response} =
   HTTPoison.get(
@@ -237,7 +240,13 @@ api_key = ""
 Once you are sure the above works correctly, use [Poison.decode/2](https://hexdocs.pm/poison/Poison.html#decode/2) to decode the `response` into an Elixir map.
 
 ```elixir
-response
+response =
+  case HTTPoison.get(
+         "https://api.openweathermap.org/data/2.5/weather?lat=#{lat}&lon=#{lon}&appid=#{api_key}"
+       ) do
+    {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+      Poison.decode!(body)
+  end
 ```
 
 ## Commit Your Progress
