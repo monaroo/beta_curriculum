@@ -6,7 +6,9 @@ Mix.install([
   {:hidden_cell, github: "brooklinjazz/hidden_cell"},
   {:tested_cell, github: "brooklinjazz/tested_cell"},
   {:utils, path: "#{__DIR__}/../utils"},
-  {:httpoison, "~> 1.8"}
+  {:httpoison, "~> 1.8"},
+  {:kino, "~> 0.8.0", override: true},
+  {:poison, "~> 5.0.0"}
 ])
 ```
 
@@ -28,6 +30,9 @@ We can also keep only the information we want, rather than all of the data retur
 
 ```elixir
 {:ok, response} = HTTPoison.get("https://pokeapi.co/api/v2/pokemon/charmander")
+long_thing = Poison.decode!(response.body)
+[list] = Map.get(long_thing, "forms")
+Map.get(list, "name")
 ```
 
 In the `Pokemon.from_response/1` function,
@@ -45,10 +50,25 @@ Enter your solution below.
 
 ```elixir
 defmodule Pokemon do
-  defstruct [:name, :weight, :height]
+  defstruct [:name, :weight, :height, types: []]
 
   def from_response(response) do
-    nil
+    long_thing = Poison.decode!(response.body)
+
+    [list] = Map.get(long_thing, "forms")
+    name = Map.get(list, "name")
+
+    weight = Map.get(long_thing, "weight")
+
+    height = Map.get(long_thing, "height")
+
+    types =
+      Map.get(long_thing, "types")
+      |> List.first()
+      |> Map.get("type")
+      |> Map.get("name")
+
+    %Pokemon{name: name, weight: weight, height: height, types: [types]}
   end
 end
 

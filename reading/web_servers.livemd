@@ -6,7 +6,8 @@ Mix.install([
   {:hidden_cell, github: "brooklinjazz/hidden_cell"},
   {:tested_cell, github: "brooklinjazz/tested_cell"},
   {:utils, path: "#{__DIR__}/../utils"},
-  {:httpoison, "~> 1.8"}
+  {:httpoison, "~> 1.8"},
+  {:kino, "~> 0.8.0", override: true}
 ])
 ```
 
@@ -116,7 +117,7 @@ Putting all of this together, we can make a `WebServer` module. The `WebServer` 
 Start the `WebServer` socket below by executing the code cell, then navigate to http://localhost:4000 in a new tab in your browser. You should see a message from the web server with the current time.
 
 ```elixir
-defmodule WebServer do
+defmodule WebServer2 do
   def start(port) do
     {:ok, listen_socket} = :gen_tcp.listen(port, active: false, reuseaddr: true)
 
@@ -129,7 +130,7 @@ defmodule WebServer do
 
     # send response
     current_time = Time.to_string(Time.utc_now())
-    response = "HTTP/1.1 200\r\nContent-Type: text/html\r\n\r\n It is #{current_time}"
+    response = "HTTP/1.1 200\r\nContent-Type: text/html\r\n\r\n <h>It is #{current_time}</h>"
     :gen_tcp.send(connection, response)
 
     # close connection
@@ -139,7 +140,7 @@ defmodule WebServer do
   end
 end
 
-WebServer.start(4000)
+WebServer2.start(4000)
 ```
 
 This server will remain open indefinitely and recursively call `accept/2` every time a new client connects to the socket on port `4000`.

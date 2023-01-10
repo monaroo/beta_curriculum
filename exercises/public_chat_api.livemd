@@ -7,6 +7,7 @@ Mix.install([
   {:tested_cell, github: "brooklinjazz/tested_cell"},
   {:utils, path: "#{__DIR__}/../utils"},
   {:kino_db, "~> 0.1.1"},
+  {:kino, "~> 0.7.0", override: true},
   {:httpoison, "~> 1.8"}
 ])
 ```
@@ -30,7 +31,7 @@ The HTTP POST headers should include the `Content-Type` field to specify that th
 Ensure that your message appears on the [chat application](http://localhost:4000/).
 
 ```elixir
-HTTPoison.post("http://localhost:4000", "{\"body\": \"hello!\"}", [
+HTTPoison.post("http://localhost:4000", "{\"body\": \"good morning!\"}", [
   {"Content-Type", "application/json"}
 ])
 ```
