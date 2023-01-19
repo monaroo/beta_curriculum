@@ -1,0 +1,30 @@
+<h1>Blog Posts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Subtitle</th>
+      <th>Content</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for blog__post <- @blog_posts do %>
+    <tr>
+      <td><%= blog__post.title %></td>
+      <td><%= blog__post.subtitle %></td>
+      <td><%= blog__post.content %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.blog__post_path(@conn, :show, blog__post) %></span>
+        <span><%= link "Edit", to: Routes.blog__post_path(@conn, :edit, blog__post) %></span>
+        <span><%= link "Delete", to: Routes.blog__post_path(@conn, :delete, blog__post), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "+ new  blog  post", to: Routes.blog__post_path(@conn, :new) %></span>

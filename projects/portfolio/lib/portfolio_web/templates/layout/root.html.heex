@@ -17,9 +17,12 @@
             <li><a href="https://exercism.org/profiles/mooooona">Exercism</a></li>
             </ul>
         </nav>
-        <p id="header">
-            Home
-        </p>
+        <div id="header">
+        <div id = "container">
+        <span><%= link "Home", to: Routes.page_path(@conn, :index) %></span>
+        </div>
+        <span><%= link "Blog", to: Routes.blog__post_path(@conn, :index) %></span>
+        </div>
     </header>
     <%= @inner_content %>
   </body>
