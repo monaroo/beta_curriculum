@@ -1,6 +1,8 @@
 defmodule PortfolioWeb.Router do
   use PortfolioWeb, :router
 
+  import PortfolioWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule PortfolioWeb.Router do
     plug :put_root_layout, {PortfolioWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -16,8 +19,6 @@ defmodule PortfolioWeb.Router do
 
   scope "/", PortfolioWeb do
     pipe_through :browser
-
-    resources "/blog", Blog_PostController
 
     get "/", PageController, :index
   end
@@ -54,5 +55,47 @@ defmodule PortfolioWeb.Router do
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", PortfolioWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", PortfolioWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    get  "/blog/new", Blog_PostController, :new
+    post "/blog", Blog_PostController, :create
+    get  "/blog/:id/edit", Blog_PostController, :edit
+    put "/blog/:id", Blog_PostController, :update
+    delete "/blog/:id", Blog_PostController, :delete
+  end
+
+  scope "/", PortfolioWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
+
+    get "/blog", Blog_PostController, :index
+    get "/blog/:id", Blog_PostController, :show
   end
 end
