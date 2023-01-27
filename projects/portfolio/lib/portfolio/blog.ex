@@ -21,6 +21,13 @@ defmodule Portfolio.Blog do
     Repo.all(Blog_Post)
   end
 
+  def list_blog_posts(title) do
+    search = "%" <> title <> "%"
+    Blog_Post
+    |> where([blog__post], ilike(blog__post.title, ^search))
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single blog__post.
 

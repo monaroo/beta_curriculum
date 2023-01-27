@@ -10,11 +10,29 @@ defmodule PortfolioWeb.Blog_PostControllerTest do
   @update_attrs %{content: "some updated content", subtitle: "some updated subtitle", title: "some updated title"}
   @invalid_attrs %{content: nil, subtitle: nil, title: nil}
 
-  describe "index" do
-    test "lists all blog_posts", %{conn: conn} do
-      conn = get(conn, Routes.blog__post_path(conn, :index))
-      assert html_response(conn, 200) =~ "Blog Posts"
+
+
+    describe "index" do
+      setup [:create_blog__post]
+
+      test "lists all blog posts", %{conn: conn, blog__post: blog__post} do
+        conn = get(conn, Routes.blog__post_path(conn, :index))
+        assert html_response(conn, 200) =~ blog__post.title
+      end
+
+    test "lists all blog__posts _ matching search query", %{conn: conn} do
+      blog__post = blog__post_fixture(title: "News")
+      conn = get(conn, Routes.blog__post_path(conn, :index, title: blog__post.title))
+      assert html_response(conn, 200) =~ blog__post.title
     end
+
+    test "lists all blog__posts _ not matching search query", %{conn: conn} do
+      blog__post = blog__post_fixture(title: "News")
+      conn = get(conn, Routes.blog__post_path(conn, :index, title: "How to Spelunk"))
+      refute html_response(conn, 200) =~ blog__post.title
+    end
+
+
   end
 
   describe "new blog__post" do

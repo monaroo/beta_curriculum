@@ -1,5 +1,5 @@
 <h1>Blog Posts</h1>
-
+<h2>Search Blog Posts</h2>
 <table>
   <thead>
     <tr>
@@ -11,7 +11,16 @@
     </tr>
   </thead>
   <tbody>
-<%= for blog__post <- @blog_posts do %>
+  <.form let={f} for={@conn} method={"get"} action={Routes.blog__post_path(@conn, :index)}>
+    <%= search_input f, :title %>
+    <%= error_tag f, :title %>
+
+
+    <div>
+      <%= submit "Go" %>
+    </div>
+  </.form>
+<%= for blog__post <- @blog__posts do %>
     <tr>
       <td><%= blog__post.title %></td>
       <td><%= blog__post.subtitle %></td>

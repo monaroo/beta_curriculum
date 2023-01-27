@@ -4,9 +4,14 @@ defmodule PortfolioWeb.Blog_PostController do
   alias Portfolio.Blog
   alias Portfolio.Blog.Blog_Post
 
+  def index(conn, %{"title" => title}) do
+    blog__posts = Blog.list_blog_posts(title)
+    render(conn, "index.html", blog__posts: blog__posts)
+  end
+
   def index(conn, _params) do
-    blog_posts = Blog.list_blog_posts()
-    render(conn, "index.html", blog_posts: blog_posts)
+    blog__posts = Blog.list_blog_posts()
+    render(conn, "index.html", blog__posts: blog__posts)
   end
 
   def new(conn, _params) do

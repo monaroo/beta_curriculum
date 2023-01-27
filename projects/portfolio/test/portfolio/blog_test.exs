@@ -15,6 +15,29 @@ defmodule Portfolio.BlogTest do
       assert Blog.list_blog_posts() == [blog__post]
     end
 
+    test "blog_posts/1 _ matching title" do
+      blog__post = blog__post_fixture(title: "Andrew Rowe")
+      assert Blog.list_blog_posts("Andrew Rowe") == [blog__post]
+    end
+
+    test "list_blog_post/1 _ non matching title" do
+      blog__post = blog__post_fixture(title: "Andrew Rowe")
+      assert Blog.list_blog_posts("Dennis E Taylor") == []
+    end
+
+    test "list_blog_posts/1 _ partially matching name" do
+      blog__post = blog__post_fixture(title: "Dennis E Taylor")
+      assert Blog.list_blog_posts("Dennis") == [blog__post]
+      assert Blog.list_blog_posts("E") == [blog__post]
+      assert Blog.list_blog_posts("Taylor") == [blog__post]
+    end
+
+    test "list_blog_posts/1 _ case insensitive match" do
+      blog__post = blog__post_fixture(title: "Dennis E Taylor")
+      assert Blog.list_blog_posts("DENNIS") == [blog__post]
+      assert Blog.list_blog_posts("dennis") == [blog__post]
+    end
+
     test "get_blog__post!/1 returns the blog__post with given id" do
       blog__post = blog__post_fixture()
       assert Blog.get_blog__post!(blog__post.id) == blog__post
