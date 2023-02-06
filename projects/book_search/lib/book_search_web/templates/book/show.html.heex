@@ -1,0 +1,13 @@
+<h1>Show Book</h1>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @book.title %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.author_book_path(@conn, :edit, @author_id, @book) %></span> |
+<span><%= link "Back", to: Routes.author_book_path(@conn, :index, @author_id) %></span>

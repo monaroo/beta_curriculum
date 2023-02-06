@@ -17,8 +17,13 @@ defmodule BookSearchWeb.Router do
   scope "/", BookSearchWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    resources "/authors", AuthorController
+    get("/", PageController, :index)
+
+    resources "/authors", AuthorController do
+      resources "/books", BookController
+    end
+
+    get "/books", BookController, :index
   end
 
   # Other scopes may use custom stacks.
