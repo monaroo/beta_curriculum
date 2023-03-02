@@ -3,10 +3,12 @@ defmodule Portfolio.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
+    # field :username, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    has_many :blog_posts, Portfolio.Blog.Blog_Post
 
     timestamps()
   end

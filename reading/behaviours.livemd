@@ -160,7 +160,11 @@ Add a `speak/0` function to the `Dog` module. When you re-evaluate the cell, the
 
 ```elixir
 defmodule Dog do
-  @callback speak() :: String.t()
+  @behaviour Pet
+
+  def speak() do
+    "Woof"
+  end
 end
 ```
 

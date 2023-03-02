@@ -1,4 +1,5 @@
 defmodule PortfolioWeb.Router do
+  #alias PortfolioWeb.Blog_PostController
   use PortfolioWeb, :router
 
   import PortfolioWeb.UserAuth
@@ -21,6 +22,9 @@ defmodule PortfolioWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    resources "/blog", Blog_PostController do
+      resources "/comments", CommentController, only: [:create]
+    end
   end
 
   # Other scopes may use custom stacks.
@@ -84,6 +88,9 @@ defmodule PortfolioWeb.Router do
     get  "/blog/:id/edit", Blog_PostController, :edit
     put "/blog/:id", Blog_PostController, :update
     delete "/blog/:id", Blog_PostController, :delete
+
+    get "/comments/new", CommentController, :new
+    post "/comments/new", CommentController, :create
   end
 
   scope "/", PortfolioWeb do

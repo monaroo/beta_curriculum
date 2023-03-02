@@ -19,5 +19,13 @@
 
 </ul>
 
+<%= render PortfolioWeb.CommentView, "new.html", conn: @conn, post: @post, comment_changeset: @comment_changeset %>
+
+<ul>
+<%= for comment <- @blog__post.comments do %>
+  <li><%= comment.content %></li>
+<% end %>
+</ul>
+
 <span><%= link "Edit", to: Routes.blog__post_path(@conn, :edit, @blog__post) %></span> |
 <span><%= link "Back", to: Routes.blog__post_path(@conn, :index) %></span>

@@ -9,6 +9,7 @@ defmodule Portfolio.Blog.Blog_Post do
     field :title, :string
 
     belongs_to :user, User
+    has_many :comments, Portfolio.Comments.Comment, foreign_key: :blog_id
 
     timestamps()
   end

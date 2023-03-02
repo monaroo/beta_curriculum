@@ -3,6 +3,8 @@ defmodule PortfolioWeb.Blog_PostController do
 
   alias Portfolio.Blog
   alias Portfolio.Blog.Blog_Post
+  alias Portfolio.Comments.Comment
+  alias Portfolio.Repo
 
   def index(conn, %{"title" => title}) do
     blog__posts = Blog.list_blog_posts(title)
@@ -36,8 +38,11 @@ defmodule PortfolioWeb.Blog_PostController do
   end
 
   def show(conn, %{"id" => id}) do
-    blog__post = Blog.get_blog__post!(id)
-    render(conn, "show.html", blog__post: blog__post)
+    blog__post = Blog_Post
+                 |> Repo.get!(id)
+                 |> Repo.preload(:comments)
+    comment_changeset = Comment.changeset(%Comment{})
+    render(conn, "show.html", blog__post: blog__post, comment_changeset: comment_changeset)
   end
 
   def edit(conn, %{"id" => id}) do

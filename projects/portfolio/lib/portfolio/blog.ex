@@ -42,7 +42,11 @@ defmodule Portfolio.Blog do
       ** (Ecto.NoResultsError)
 
   """
-  def get_blog__post!(id), do: Repo.get!(Blog_Post, id)
+  def get_blog__post!(id) do
+    Blog_Post
+    |> Ecto.Query.preload([:user, :comments])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a blog__post.
